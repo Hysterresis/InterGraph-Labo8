@@ -24,6 +24,7 @@ namespace InterGraph_Labo8
         {
             InitializeComponent();
             coucou maxime;
+            coucou tout le monde!!!!!;
         }
     }
 }
