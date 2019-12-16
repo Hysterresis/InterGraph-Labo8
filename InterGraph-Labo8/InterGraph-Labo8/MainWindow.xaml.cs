@@ -23,8 +23,15 @@ namespace InterGraph_Labo8
         public MainWindow()
         {
             InitializeComponent();
-            coucou maxime;
-            coucou tout le monde!!!!!;
+            bool maxLeBg = false;
+            if (maxLeBg == true)
+            {
+                Console.Write("Le BG");
+            }
+            else
+            {
+                Console.Write("EEEETTTT non...");
+            }
         }
     }
 }
