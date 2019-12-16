@@ -23,6 +23,7 @@ namespace InterGraph_Labo8
         public MainWindow()
         {
             InitializeComponent();
+            coucou maxime;
         }
     }
 }
