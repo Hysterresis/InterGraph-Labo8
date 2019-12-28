@@ -82,6 +82,13 @@ namespace InterGraph_Labo8
             }
         }
 
+       
+
+        private void BtnHelp_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
         #endregion
     }
 }

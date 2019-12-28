@@ -6,7 +6,34 @@
         xmlns:local="clr-namespace:InterGraph_Labo8"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+    
+        <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TabControl TabStripPlacement="Bottom" Grid.Column="0" Grid.ColumnSpan="3">
+            <TabItem x:Name="TabConnexion" Header="Connexion"></TabItem>
+            <TabItem x:Name="TabJob" Header="Travail">
+                
+            </TabItem>
+            <TabItem x:Name="TabMachine" Header="Machine">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Source="Images/conveyor-stop.png" Width="110"/>
+                    <Image Source="Images/conveyor-moving.png" Width="110"/>
+                    <Image Source="Images/conveyor-waiting.png" Width="110"/>
+                    <Image Source="Images/conveyor-green.png" Width="110"/>
+                    <Image Source="Images/conveyor-orange.png" Width="110"/>
+                    <Image Source="Images/conveyor-blue.png" Width="110"/>
+                    <Image Source="Images/conveyor-yellow.png" Width="110"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="TabConfiguration" Header="Config"></TabItem>
+            </TabControl>
+        <Button x:Name="BtnHelp" Content="Help" Grid.Column="0" VerticalAlignment="Top" ToolTip="Show help" Click="BtnHelp_Click"/>
+        <Button x:Name="BtnEmergencyStop" Content="STOP" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,50,50" ToolTip="Emergency STOP"/>
+        <Image x:Name="ImgConnexionStatus" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="50" Margin="0,10,10,0" Source="Images/connectArrow.png"/>
     </Grid>
-</Window>
+        
+    </Window>

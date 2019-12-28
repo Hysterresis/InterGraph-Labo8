@@ -64,6 +64,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="BatchListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -72,6 +76,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Batch.cs" />
+    <Compile Include="BatchList.cs" />
+    <Compile Include="BatchListBox.xaml.cs">
+      <DependentUpon>BatchListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ColorExtensions.cs" />
+    <Compile Include="PaintingMachineConfiguration.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -98,7 +109,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyLib.cs" />
+    <Compile Include="Recipe.cs" />
+    <Compile Include="StaticLib.cs" />
     <Compile Include="PaintingMachine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -128,6 +140,28 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Themes\MetroDark\HowToApplyTheme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\047-foreman.png" />
+    <Resource Include="Images\059-mechanic.png" />
+    <Resource Include="Images\078-programmer.png" />
+    <Resource Include="Images\connectArrow.png" />
+    <Resource Include="Images\help.png" />
+    <Resource Include="Images\paintBucket.png" />
+    <Resource Include="Images\settings.png" />
+    <Resource Include="Images\stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\conveyor-blue.png" />
+    <Resource Include="Images\conveyor-green.png" />
+    <Resource Include="Images\conveyor-moving.png" />
+    <Resource Include="Images\conveyor-orange.png" />
+    <Resource Include="Images\conveyor-stop.png" />
+    <Resource Include="Images\conveyor-waiting.png" />
+    <Resource Include="Images\conveyor-yellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Dossier test 3\Maquette.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
