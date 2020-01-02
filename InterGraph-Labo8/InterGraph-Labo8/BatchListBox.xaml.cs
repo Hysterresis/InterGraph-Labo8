@@ -24,5 +24,7 @@ namespace InterGraph_Labo8
         {
             InitializeComponent();
         }
+
+        public BatchList BatchList { get; set; }
     }
 }

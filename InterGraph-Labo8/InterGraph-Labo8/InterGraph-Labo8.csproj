@@ -82,7 +82,6 @@
       <DependentUpon>BatchListBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ColorExtensions.cs" />
-    <Compile Include="PaintingMachineConfiguration.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -161,7 +160,7 @@
     <Resource Include="Images\conveyor-yellow.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Dossier test 3\Maquette.png" />
+    <Resource Include="Images\disconnectArrow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

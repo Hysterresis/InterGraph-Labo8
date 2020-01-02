@@ -55,7 +55,7 @@ namespace InterGraph_Labo8
 
         #region Methods
 
-        public Color FinalColor(PaintingMachineConfiguration machineConfiguration)
+        public Color FinalColor(PaintingMachine machineConfiguration)
         {
             Color finalColor = Color.FromArgb(255, 255, 255, 255); //Init to white
             //Add A pigment

@@ -18,7 +18,7 @@ namespace InterGraph_Labo8
                 {
                     Convert.ToByte(ipByte);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return false;
                 }

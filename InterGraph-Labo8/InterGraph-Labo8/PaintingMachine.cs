@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using System.Xml;
 
 namespace InterGraph_Labo8
 {
@@ -15,10 +21,23 @@ namespace InterGraph_Labo8
     *  
     *  Ces exceptions devront être géré dans la class parente
     */
-    public class PaintingMachine
+    public class PaintingMachine : INotifyPropertyChanged
     {
+
+        #region PropretyChangeInterface
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void DoPropertyChanged(string preopretyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(preopretyName));
+        }
+
+        #endregion
+
         #region Constants
         private const int UdpTimeout = 400;
+        private const string CorruptedFileMessage = "Fichier corrompu";
         #endregion
 
         #region Enumerations
@@ -30,6 +49,19 @@ namespace InterGraph_Labo8
             PaintC,
             PaintD
         }
+
+        public enum MachineStates
+        {
+            Stoped,
+            BucketComing,
+            BucketLockedAndWaiting,
+            PaintAFilling,
+            PaintBFilling,
+            PaintCFilling,
+            PaintDFilling,
+            WorkDone
+        }
+
         #endregion
 
         #region Constructors
@@ -37,12 +69,20 @@ namespace InterGraph_Labo8
         /// <summary>
         /// The default Constructor.
         /// </summary>
-        public PaintingMachine(string ip="0.0.0.0", int port=0)
+        public PaintingMachine(string ip = "0.0.0.0", int port = 0, double flow = 0.0, Color colorA = new Color(),
+            Color colorB = new Color(), Color colorC = new Color(), Color colorD = new Color())
         {
+            Flow = flow;
+            ColorA = colorA;
+            ColorB = colorB;
+            ColorC = colorC;
+            ColorD = colorD;
             Port = port;
             Ip = ip;
-            // create object to get remote adress when receiving data
             sender = new IPEndPoint(IPAddress.Any, 0);
+            BatchList = new BatchList();
+            checkConnectionTimer = new Timer(CheckConnection, null, 0, 200);
+            paintInjectionStopWatch = new Stopwatch();
         }
 
         #endregion
@@ -51,6 +91,11 @@ namespace InterGraph_Labo8
 
         private UdpClient udpClient;
         private IPEndPoint sender;
+        private MachineColor activeColorMemory;
+        private bool conveyorOnMemory;
+        private MachineStates currentStateMemory;
+        Stopwatch paintInjectionStopWatch;
+        Timer checkConnectionTimer;
 
         #endregion
 
@@ -71,24 +116,26 @@ namespace InterGraph_Labo8
             }
         }
         private string ip;
-
         public int Port { get; set; }
+        public double ComputationPerSeconds { get; } = 1000 / 250;
+        public Color ColorA { get; set; }
+        public Color ColorB { get; set; }
+        public Color ColorC { get; set; }
+        public Color ColorD { get; set; }
+        public double Flow { get; set; }
+        public BatchList BatchList { get; set; }
+        public MachineStates CurrentState { get; set; }
 
         public bool Connected
         {
-            get
+            get { return connected; }
+            set
             {
-                try
-                {
-                    Send("ConveyorMoving");
-                }
-                catch (SocketException)
-                {
-                    return false;
-                }
-                return true;
+                connected = value;
+                DoPropertyChanged(nameof(Connected));
             }
         }
+        private bool connected;
 
         public bool ConveyorOn
         {
@@ -127,7 +174,7 @@ namespace InterGraph_Labo8
             }
         }
 
-        public bool BucketsLoadingEnabled
+        public bool BucketsLoading
         {
             set
             {
@@ -169,6 +216,10 @@ namespace InterGraph_Labo8
 
         public MachineColor ActiveColor
         {
+            get
+            {
+                return activeColor;
+            }
             set
             {
                 string reply;
@@ -198,18 +249,60 @@ namespace InterGraph_Labo8
                     {
                         throw new Exception("Invalid reply from painting machine");
                     }
+                    activeColor = value;
                 }
             }
         }
+        private MachineColor activeColor;
 
+        public Thread ProductionThread { get; set; }
         #endregion
 
         #region Methods
 
+        public void CheckConnection(Object state)
+        {
+            try
+            {
+                Send("ConveyorMoving");
+                Connected = true;
+            }
+            catch (SocketException)
+            {
+                lock (this) { Connected = false; }
+            }
+        }
+
         public void EmergencyStop()
         {
-            this.ActiveColor = MachineColor.None;
-            this.ConveyorOn = false;
+            try
+            {
+                activeColorMemory = ActiveColor;
+                conveyorOnMemory = ConveyorOn;
+                currentStateMemory = CurrentState;
+                ActiveColor = MachineColor.None;
+                ConveyorOn = false;
+                paintInjectionStopWatch.Stop();
+            }
+            catch (SocketException)
+            {
+                lock (this) { Connected = false; }
+            }
+        }
+
+        public void Start()
+        {
+            try
+            {
+                ActiveColor = activeColorMemory;
+                ConveyorOn = conveyorOnMemory;
+                CurrentState = currentStateMemory;
+                paintInjectionStopWatch.Start();
+            }
+            catch (SocketException)
+            {
+                lock (this) { Connected = false; }
+            }
         }
 
         private string Send(string message)
@@ -225,6 +318,121 @@ namespace InterGraph_Labo8
             return Encoding.ASCII.GetString(answerBytes);
         }
 
+        public void XmlRead(XmlReader reader)
+        {
+            reader.ReadStartElement(nameof(PaintingMachine));
+            Flow = reader.ReadElementContentAsDouble(nameof(Flow), "");
+            reader.ReadStartElement("PaintColors");
+            ColorA.XmlRead(reader, nameof(ColorA));
+            ColorB.XmlRead(reader, nameof(ColorB));
+            ColorC.XmlRead(reader, nameof(ColorC));
+            ColorD.XmlRead(reader, nameof(ColorD));
+            reader.ReadEndElement();
+            reader.ReadEndElement();
+        }
+        public void XmlWrite(XmlWriter writer)
+        {
+            writer.WriteStartElement(nameof(PaintingMachine));
+            writer.WriteElementString(nameof(Flow), Flow.ToString());
+            writer.WriteStartElement("PaintColors");
+            ColorA.XmlWrite(writer, nameof(ColorA));
+            ColorB.XmlWrite(writer, nameof(ColorB));
+            ColorC.XmlWrite(writer, nameof(ColorC));
+            ColorD.XmlWrite(writer, nameof(ColorD));
+            writer.WriteEndElement();
+            writer.WriteEndElement();
+        }
+        public void ExecuteProductionAsync()
+        {
+            ProductionThread = new Thread(new ThreadStart(ExecuteProduction));
+            ProductionThread.Start();
+        }
+
+        private void ExecuteProduction()
+        {
+            try
+            {
+                foreach (Batch batch in BatchList.Batches)
+                {
+                    for (int i = 0; i < batch.NumberOfElements; i++)
+                    {
+                        BucketsLoading = true;
+                        ConveyorOn = true;
+                        CurrentState = MachineStates.BucketComing;
+                        while (CurrentState != MachineStates.WorkDone)
+                        {
+                            switch (CurrentState)
+                            {
+                                case MachineStates.BucketComing:
+                                    if (BucketLocked)
+                                    {
+                                        ActiveColor = MachineColor.PaintA;
+                                        paintInjectionStopWatch.Restart();
+                                        CurrentState = MachineStates.PaintAFilling;
+                                    }
+                                    break;
+                                case MachineStates.PaintAFilling:
+                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityA / Flow) * 1000))
+                                    {
+                                        ActiveColor = MachineColor.PaintB;
+                                        paintInjectionStopWatch.Restart();
+                                        CurrentState = MachineStates.PaintBFilling;
+                                    }
+                                    break;
+                                case MachineStates.PaintBFilling:
+                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityB / Flow) * 1000))
+                                    {
+                                        ActiveColor = MachineColor.PaintC;
+                                        paintInjectionStopWatch.Restart();
+                                        CurrentState = MachineStates.PaintCFilling;
+                                    }
+                                    break;
+                                case MachineStates.PaintCFilling:
+                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityC / Flow) * 1000))
+                                    {
+                                        ActiveColor = MachineColor.PaintD;
+                                        paintInjectionStopWatch.Restart();
+                                        CurrentState = MachineStates.PaintDFilling;
+                                    }
+                                    break;
+                                case MachineStates.PaintDFilling:
+                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityD / Flow) * 1000))
+                                    {
+                                        ActiveColor = MachineColor.None;
+                                        paintInjectionStopWatch.Reset();
+                                        CurrentState = MachineStates.WorkDone;
+                                    }
+                                    break;
+                                case MachineStates.Stoped:
+                                    break;
+                                default:
+                                    throw new Exception("Comportement anormal de la machine");
+                            }
+                            Thread.Sleep(25);
+                        }
+                    }
+                }
+            }
+            catch (SocketException)
+            {
+                lock (this) { Connected = false; }
+            }
+        }
+
+        public void LoadBatchList(string filePath)
+        {
+            try
+            {
+                using (XmlReader reader = XmlReader.Create(filePath))
+                {
+                    BatchList.XmlRead(reader);
+                }
+            }
+            catch (System.Exception e)
+            {
+                MessageBox.Show(CorruptedFileMessage + e.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         #endregion
     }
 }

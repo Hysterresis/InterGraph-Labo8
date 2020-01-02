@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InterGraph_Labo8"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Closing="Window_Closing">
     
         <Grid >
         <Grid.ColumnDefinitions>
@@ -19,20 +20,21 @@
                 
             </TabItem>
             <TabItem x:Name="TabMachine" Header="Machine">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image Source="Images/conveyor-stop.png" Width="110"/>
-                    <Image Source="Images/conveyor-moving.png" Width="110"/>
-                    <Image Source="Images/conveyor-waiting.png" Width="110"/>
-                    <Image Source="Images/conveyor-green.png" Width="110"/>
-                    <Image Source="Images/conveyor-orange.png" Width="110"/>
-                    <Image Source="Images/conveyor-blue.png" Width="110"/>
-                    <Image Source="Images/conveyor-yellow.png" Width="110"/>
-                </StackPanel>
+                <UniformGrid Rows="1" Columns="3">
+                    <TextBlock Text="TIMER" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Image Source="Images/conveyor-stop.png" Grid.Column="1"/>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                        <Button x:Name="BtnStartCycle" Content="Start cycle" Margin="10" Click="BtnStartCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+                        <Button x:Name="BtnStopCycle" Content="Stop cycle" Margin="10" Click="BtnStopCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+                        <Button x:Name="BtnReset" Content="Reset" Margin="10" Click="BtnReset_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+                    </StackPanel>
+                </UniformGrid>
+
             </TabItem>
             <TabItem x:Name="TabConfiguration" Header="Config"></TabItem>
             </TabControl>
         <Button x:Name="BtnHelp" Content="Help" Grid.Column="0" VerticalAlignment="Top" ToolTip="Show help" Click="BtnHelp_Click"/>
-        <Button x:Name="BtnEmergencyStop" Content="STOP" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,50,50" ToolTip="Emergency STOP"/>
+        <Button x:Name="BtnEmergencyStop" Content="STOP" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,50,50" ToolTip="Emergency STOP" Click="BtnEmergencyStop_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
         <Image x:Name="ImgConnexionStatus" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="50" Margin="0,10,10,0" Source="Images/connectArrow.png"/>
     </Grid>
         
