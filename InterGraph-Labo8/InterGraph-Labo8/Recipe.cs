@@ -50,14 +50,16 @@ namespace InterGraph_Labo8
         public double QuantityC { get; set; }
         public double QuantityD { get; set; }
         public double TotalQuantity => (QuantityA + QuantityB + QuantityC + QuantityD);
+        public Color FinalColor { get { return finalColor; } }
+        private Color finalColor;
 
         #endregion
 
         #region Methods
 
-        public Color FinalColor(PaintingMachine machineConfiguration)
+        public void SetFinalColor(PaintingMachineConfiguration machineConfiguration)
         {
-            Color finalColor = Color.FromArgb(255, 255, 255, 255); //Init to white
+            finalColor = Color.FromArgb(255, 255, 255, 255); //Init to white
             //Add A pigment
             for (int i = 0; i < (int)(machineConfiguration.ComputationPerSeconds * QuantityA / machineConfiguration.Flow); i++)
             {
@@ -78,11 +80,9 @@ namespace InterGraph_Labo8
             {
                 finalColor = StaticLib.MixColors(finalColor, machineConfiguration.ColorD);
             }
-
-            return finalColor;
         }
 
-        public double TotalTime(double flow) => (TotalQuantity/flow);
+        public TimeSpan TotalTime(double flow, TimeSpan bucketMovingTime) => (TimeSpan.FromSeconds(TotalQuantity / flow) + bucketMovingTime);
 
         public void XmlRead(XmlReader reader)
         {

@@ -1,11 +1,23 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows.Media;
 using System.Xml;
 
 namespace InterGraph_Labo8
 {
-    public class Batch
+    public class Batch : INotifyPropertyChanged
     {
+        #region PropretyChangeInterface
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void DoPropertyChanged(string preopretyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(preopretyName));
+        }
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -30,13 +42,34 @@ namespace InterGraph_Labo8
         public int Id { get; set; }
         public Recipe Recipe { get; set; }
         public int NumberOfElements { get; set; }
+        public TimeSpan TotalTime { get { return totalTime; } }
+        private TimeSpan totalTime;
+        
+        public TimeSpan CurrentProductionTime
+        {
+            get { return currentProductionTime; }
+            set
+            {
+                currentProductionTime = value;
+                DoPropertyChanged(nameof(CurrentProductionTime));
+                
+            }
+        }
+        private TimeSpan currentProductionTime;
 
         #endregion
 
         #region Methods
 
-        public double TotalTime(double flow) => (Recipe.TotalTime(flow)* NumberOfElements);
-
+        /// <summary>
+        /// Permet de définir et enregistrer dans la propriété "TotalTime" le temps total de
+        /// production du lot, du moment où le premier seau est là jusqu'à ce que le dernier
+        /// soit remplit
+        /// </summary>
+        /// <param name="flow"></param>
+        /// <param name="bucketMovingTime"></param>
+        public void SetTotalTime(double flow, TimeSpan bucketMovingTime) => totalTime = (Recipe.TotalTime(flow, bucketMovingTime).Multiply(NumberOfElements) - bucketMovingTime);
+       
         public void XmlRead(XmlReader reader)
         {
             reader.ReadStartElement(nameof(Batch));

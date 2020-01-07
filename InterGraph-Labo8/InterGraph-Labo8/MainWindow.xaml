@@ -17,19 +17,10 @@
         <TabControl TabStripPlacement="Bottom" Grid.Column="0" Grid.ColumnSpan="3">
             <TabItem x:Name="TabConnexion" Header="Connexion"></TabItem>
             <TabItem x:Name="TabJob" Header="Travail">
-                
+                <local:BatchListBox BatchList="{Binding PaintingMachine.BatchList}"/>
             </TabItem>
             <TabItem x:Name="TabMachine" Header="Machine">
-                <UniformGrid Rows="1" Columns="3">
-                    <TextBlock Text="TIMER" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <Image Source="Images/conveyor-stop.png" Grid.Column="1"/>
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                        <Button x:Name="BtnStartCycle" Content="Start cycle" Margin="10" Click="BtnStartCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-                        <Button x:Name="BtnStopCycle" Content="Stop cycle" Margin="10" Click="BtnStopCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-                        <Button x:Name="BtnReset" Content="Reset" Margin="10" Click="BtnReset_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-                    </StackPanel>
-                </UniformGrid>
-
+                <local:MachineSupervision PaintingMachine="{Binding PaintingMachine}"/>
             </TabItem>
             <TabItem x:Name="TabConfiguration" Header="Config"></TabItem>
             </TabControl>
