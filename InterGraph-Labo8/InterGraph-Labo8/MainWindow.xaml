@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:InterGraph_Labo8"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
-        Closing="Window_Closing">
-    
+        Closing="Window_Closing" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+
         <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -15,7 +15,40 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TabControl TabStripPlacement="Bottom" Grid.Column="0" Grid.ColumnSpan="3">
-            <TabItem x:Name="TabConnexion" Header="Connexion"></TabItem>
+            <TabItem x:Name="TabConnexion" Header="Connexion">
+                <UniformGrid Rows="1" Margin="50,0">
+                    <Border  Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
+                        <Button x:Name="UserSelected" BorderThickness="0" Background="Transparent">
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="15"/>
+                                </Style>
+                            </Button.Resources>
+                            <Image Source="Images/059-mechanic.png"/>
+                        </Button>
+                    </Border>
+                    <Border Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
+                        <Button x:Name="ForemanSelected" BorderThickness="0" Background="Transparent">
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="15"/>
+                                </Style>
+                            </Button.Resources>
+                            <Image Source="Images/047-foreman.png"/>
+                        </Button>
+                    </Border>
+                    <Border Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
+                        <Button x:Name="AdminSelected" BorderThickness="0" Background="Transparent" >
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="15"/>
+                                </Style>
+                            </Button.Resources>
+                            <Image Source="Images/078-programmer.png"/>
+                        </Button>
+                    </Border>
+                </UniformGrid>
+            </TabItem>
             <TabItem x:Name="TabJob" Header="Travail">
                 <local:BatchListBox BatchList="{Binding PaintingMachine.BatchList}"/>
             </TabItem>
