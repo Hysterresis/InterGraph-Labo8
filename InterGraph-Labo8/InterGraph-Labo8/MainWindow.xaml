@@ -59,7 +59,7 @@
             </TabControl>
         <Button x:Name="BtnHelp" Content="Help" Grid.Column="0" VerticalAlignment="Top" ToolTip="Show help" Click="BtnHelp_Click"/>
         <Button x:Name="BtnEmergencyStop" Content="STOP" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,50,50" ToolTip="Emergency STOP" Click="BtnEmergencyStop_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-        <Image x:Name="ImgConnexionStatus" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="50" Margin="0,10,10,0" Source="Images/connectArrow.png"/>
+        <Image x:Name="ImgConnexionStatus" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="50" Margin="0,10,10,0" Source="Images/disconnectArrow.png"/>
     </Grid>
         
     </Window>
