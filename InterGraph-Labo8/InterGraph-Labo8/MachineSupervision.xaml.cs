@@ -71,11 +71,11 @@ namespace InterGraph_Labo8
         //    }
         //}
 
-        private void BtnStartCycle_Click(object sender, RoutedEventArgs e) => PaintingMachine.Start();
+        private void BtnStartCycle_Click(object sender, RoutedEventArgs e) => PaintingMachine.StartProduction();
 
-        private void BtnStopCycle_Click(object sender, RoutedEventArgs e) { }
+        private void BtnStopCycle_Click(object sender, RoutedEventArgs e) => PaintingMachine.StopCycle();
 
-        private void BtnReset_Click(object sender, RoutedEventArgs e) { }
+        private void BtnReset_Click(object sender, RoutedEventArgs e) => PaintingMachine.ResetProduction();
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {

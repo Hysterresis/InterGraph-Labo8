@@ -49,7 +49,6 @@ namespace InterGraph_Labo8
                 defaultMachineConfiguration);
             PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
             PaintingMachine.LoadBatchList("../../BatchList.xml");
-            PaintingMachine.ExecuteProductionAsync();
         }
 
         #endregion
@@ -105,7 +104,7 @@ namespace InterGraph_Labo8
                     }
                     break;
                 case MessageBoxResult.No:
-                    PaintingMachine.ProductionThread.Abort();
+                    PaintingMachine.ProductionThread?.Abort();
                     break;
                 default:
                     break;

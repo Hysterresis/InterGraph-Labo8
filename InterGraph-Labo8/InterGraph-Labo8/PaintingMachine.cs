@@ -38,7 +38,7 @@ namespace InterGraph_Labo8
         #region Constants
         private const int UdpTimeout = 400;
         private const string CorruptedFileMessage = "Fichier corrompu";
-        private const int ProductionTickWaitingTime = 25;
+        private const int ProductionTickWaitingTime = 0;
         private TimeSpan BucketMovingTime = new TimeSpan(0, 0, 0, 0, 2750);
         #endregion
 
@@ -133,6 +133,7 @@ namespace InterGraph_Labo8
             }
         }
         private MachineStates currentState = MachineStates.Stoped;
+        private readonly object currentStateLock = new object();
 
         public bool Connected
         {
@@ -147,6 +148,7 @@ namespace InterGraph_Labo8
             }
         }
         private bool connected;
+        private readonly object connectedLock = new object();
 
         public bool ConveyorOn
         {
@@ -280,7 +282,7 @@ namespace InterGraph_Labo8
             }
             catch (SocketException)
             {
-                lock (this) { Connected = false; }
+                lock (connectedLock) { Connected = false; }
             }
         }
 
@@ -299,25 +301,43 @@ namespace InterGraph_Labo8
             }
             catch (SocketException)
             {
-                lock (this) { Connected = false; }
+                lock (connectedLock) { Connected = false; }
                 throw;
             }
         }
 
-        public void Start()
+        public void StartProduction()
         {
             try
             {
-                ActiveColor = activeColorMemory;
-                ConveyorOn = conveyorOnMemory;
-                CurrentState = currentStateMemory;
-                paintInjectionStopWatch.Start();
-                batchProductionStopWatch.Start();
+                if (ProductionThread?.IsAlive == true)
+                {
+                    ActiveColor = activeColorMemory;
+                    ConveyorOn = conveyorOnMemory;
+                    CurrentState = currentStateMemory;
+                    paintInjectionStopWatch.Start();
+                    batchProductionStopWatch.Start();
+                }
+                else
+                {
+                    ProductionThread = new Thread(new ThreadStart(ExecuteProduction));
+                    ProductionThread.Start();
+                }
             }
             catch (SocketException)
             {
-                lock (this) { Connected = false; }
+                lock (connectedLock) { Connected = false; }
                 throw;
+            }
+        }
+
+        public void ResetProduction()
+        {
+            EmergencyStop();
+            ProductionThread.Abort();
+            foreach (var batch in BatchList.Batches)
+            {
+                batch.CurrentProductionTime = new TimeSpan(0);
             }
         }
 
@@ -336,12 +356,6 @@ namespace InterGraph_Labo8
             return Encoding.ASCII.GetString(answerBytes);
         }
 
-        public void ExecuteProductionAsync()
-        {
-            ProductionThread = new Thread(new ThreadStart(ExecuteProduction));
-            ProductionThread.Start();
-        }
-
         private void ExecuteProduction()
         {
             try
@@ -350,8 +364,12 @@ namespace InterGraph_Labo8
                 {
                     for (int i = 0; i < batch.NumberOfElements; i++)
                     {
-                        lock (this) { CurrentState = MachineStates.InitProduction; }
-
+                        lock (currentStateLock) { CurrentState = MachineStates.InitProduction; }
+                        if (userWantToStop)
+                        {
+                            userWantToStop = false;
+                            EmergencyStop();
+                        }
                         while (CurrentState != MachineStates.NextBucket)
                         {
                             switch (CurrentState)
@@ -359,7 +377,7 @@ namespace InterGraph_Labo8
                                 case MachineStates.InitProduction:
                                     BucketsLoading = true;
                                     ConveyorOn = true;
-                                    lock (this) { CurrentState = MachineStates.BucketComing; }
+                                    lock (currentStateLock) { CurrentState = MachineStates.BucketComing; }
                                     break;
                                 case MachineStates.BucketComing:
                                     if (BucketLocked)
@@ -370,7 +388,7 @@ namespace InterGraph_Labo8
                                         }
                                         ActiveColor = MachineColor.PaintA;
                                         paintInjectionStopWatch.Restart();
-                                        lock (this) { CurrentState = MachineStates.PaintAFilling; }
+                                        lock (currentStateLock) { CurrentState = MachineStates.PaintAFilling; }
                                     }
                                     break;
                                 case MachineStates.PaintAFilling:
@@ -378,7 +396,7 @@ namespace InterGraph_Labo8
                                     {
                                         ActiveColor = MachineColor.PaintB;
                                         paintInjectionStopWatch.Restart();
-                                        lock (this) { CurrentState = MachineStates.PaintBFilling; }
+                                        lock (currentStateLock) { CurrentState = MachineStates.PaintBFilling; }
                                     }
                                     break;
                                 case MachineStates.PaintBFilling:
@@ -386,7 +404,7 @@ namespace InterGraph_Labo8
                                     {
                                         ActiveColor = MachineColor.PaintC;
                                         paintInjectionStopWatch.Restart();
-                                        lock (this) { CurrentState = MachineStates.PaintCFilling; }
+                                        lock (currentStateLock) { CurrentState = MachineStates.PaintCFilling; }
                                     }
                                     break;
                                 case MachineStates.PaintCFilling:
@@ -394,7 +412,7 @@ namespace InterGraph_Labo8
                                     {
                                         ActiveColor = MachineColor.PaintD;
                                         paintInjectionStopWatch.Restart();
-                                        lock (this) { CurrentState = MachineStates.PaintDFilling; }
+                                        lock (currentStateLock) { CurrentState = MachineStates.PaintDFilling; }
                                     }
                                     break;
                                 case MachineStates.PaintDFilling:
@@ -402,7 +420,7 @@ namespace InterGraph_Labo8
                                     {
                                         ActiveColor = MachineColor.None;
                                         paintInjectionStopWatch.Reset();
-                                        lock (this) { CurrentState = MachineStates.WorkDone; }
+                                        lock (currentStateLock) { CurrentState = MachineStates.WorkDone; }
                                     }
                                     break;
                                 case MachineStates.WorkDone:
@@ -411,7 +429,7 @@ namespace InterGraph_Labo8
                                         batchProductionStopWatch.Reset();
                                     }
                                     if (userWantToStop) EmergencyStop();
-                                    lock (this) { CurrentState = MachineStates.NextBucket; }
+                                    lock (currentStateLock) { CurrentState = MachineStates.NextBucket; }
                                     break;
                                 case MachineStates.Stoped:
                                     break;
@@ -425,11 +443,12 @@ namespace InterGraph_Labo8
                             Thread.Sleep(ProductionTickWaitingTime);
                         }
                     }
+                    
                 }
             }
             catch (SocketException)
             {
-                lock (this) { Connected = false; }
+                lock (connectedLock) { Connected = false; }
             }
         }
 

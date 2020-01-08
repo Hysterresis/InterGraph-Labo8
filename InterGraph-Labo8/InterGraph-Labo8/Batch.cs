@@ -68,7 +68,7 @@ namespace InterGraph_Labo8
         /// </summary>
         /// <param name="flow"></param>
         /// <param name="bucketMovingTime"></param>
-        public void SetTotalTime(double flow, TimeSpan bucketMovingTime) => totalTime = (Recipe.TotalTime(flow, bucketMovingTime).Multiply(NumberOfElements) - bucketMovingTime);
+        public void SetTotalTime(double flow, TimeSpan bucketMovingTime) => totalTime = (Recipe.TotalTime(flow, bucketMovingTime).Multiply(NumberOfElements));
        
         public void XmlRead(XmlReader reader)
         {
