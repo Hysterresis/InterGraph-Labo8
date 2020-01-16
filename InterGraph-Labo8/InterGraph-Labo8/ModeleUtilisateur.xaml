@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="InterGraph_Labo8.ModeleUtilisateur"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:InterGraph_Labo8"
+             mc:Ignorable="d" 
+             Height="Auto" Width="Auto">
+    <StackPanel>
+        <TextBlock x:Name="Name" Text="{Binding Path=TextName}" FontSize="30" HorizontalAlignment="Center"/>
+        <Border  Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=isSelected}" Value="True">
+                            <Setter Property="Background" Value="DarkGray"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Button x:Name="UserSelected" BorderThickness="0" Background="Transparent" Click="UserSelected_Click">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="15"/>
+                    </Style>
+                </Button.Resources>
+                <Image x:Name="UserImage" Source="{Binding Path=SourceImage}"/>
+            </Button>
+        </Border>
+    </StackPanel>
+</UserControl>
