@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace InterGraph_Labo8
@@ -14,9 +10,14 @@ namespace InterGraph_Labo8
         public object Convert(object[] values, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            TimeSpan totalTime = ((TimeSpan)values[0]);
-            TimeSpan currentTime = ((TimeSpan)values[1]);
-            return (totalTime- currentTime).ToString(@"mm\:ss");
+            if (values[0] is TimeSpan && values[1] is TimeSpan)
+            {
+                TimeSpan totalTime = ((TimeSpan)values[0]);
+                TimeSpan currentTime = ((TimeSpan)values[1]);
+                return (totalTime - currentTime);
+            }
+            else return "";
+
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter,

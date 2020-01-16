@@ -18,15 +18,15 @@ namespace InterGraph_Labo8
     /// <summary>
     /// Logique d'interaction pour BatchListBox.xaml
     /// </summary>
-    public partial class BatchListBox : UserControl
+    public partial class UcBatchListBox : UserControl
     {
-        public BatchListBox()
+        public UcBatchListBox()
         {
             InitializeComponent();
         }
 
         private static readonly DependencyProperty BatchListProperty =
-            DependencyProperty.Register("BatchList", typeof(BatchList), typeof(BatchListBox));
+            DependencyProperty.Register("BatchList", typeof(BatchList), typeof(UcBatchListBox));
 
         public BatchList BatchList
         {

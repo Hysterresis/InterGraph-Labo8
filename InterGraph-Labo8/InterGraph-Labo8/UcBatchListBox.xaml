@@ -1,10 +1,11 @@
-﻿<UserControl x:Class="InterGraph_Labo8.BatchListBox"
+﻿<UserControl x:Class="InterGraph_Labo8.UcBatchListBox"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:InterGraph_Labo8"
-             mc:Ignorable="d" >
+             mc:Ignorable="d" 
+             >
     <UserControl.Resources>
         <local:RemainingTimeConverter x:Key="RemainingTimeConverter"/>
     </UserControl.Resources>
@@ -13,59 +14,56 @@
              DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
         <ListBox.ItemTemplate>
             <DataTemplate>
-                <ContentPresenter>
-                    <ContentPresenter.Content>
-                        <DockPanel>
-                            <TextBlock Text="{Binding NumberOfElements}" 
+                <DockPanel>
+                    <TextBlock Text="{Binding NumberOfElements}" 
                                        DockPanel.Dock="Left"
                                        FontSize="20" VerticalAlignment="Center"/>
-                            <Rectangle Margin="10" RadiusX="5" RadiusY="5" 
+                    <Rectangle Margin="10" RadiusX="5" RadiusY="5" 
                                                Height="50" Width="50" DockPanel.Dock="Left">
-                                <Rectangle.Fill>
-                                    <SolidColorBrush Color="{Binding Recipe.FinalColor}"/>
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
-                                <TextBlock>
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{Binding Recipe.FinalColor}"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
+                        <TextBlock>
                                             <Run Text="Color A:" FontWeight="Bold"/>
                                             <Run Text="{Binding Path=Recipe.QuantityA, 
                                                 StringFormat=N2, Mode=OneWay}"/>
                                             <Run Text="ml"/>
-                                </TextBlock>
-                                <TextBlock>
+                        </TextBlock>
+                        <TextBlock>
                                             <Run Text="Color B:" FontWeight="Bold"/>
                                             <Run Text="{Binding Path=Recipe.QuantityB, 
                                                 StringFormat=N2, Mode=OneWay}"/>
                                             <Run Text="ml"/>
-                                </TextBlock>
-                                <TextBlock>
+                        </TextBlock>
+                        <TextBlock>
                                             <Run Text="Color C:" FontWeight="Bold"/>
                                             <Run Text="{Binding Path=Recipe.QuantityC, 
                                                 StringFormat=N2, Mode=OneWay}"/>
                                             <Run Text="ml"/>
-                                </TextBlock>
-                                <TextBlock>
+                        </TextBlock>
+                        <TextBlock>
                                             <Run Text="Color D:" FontWeight="Bold"/>
                                             <Run Text="{Binding Path=Recipe.QuantityD, 
                                                 StringFormat=N2, Mode=OneWay}"/>
                                             <Run Text="ml"/>
-                                </TextBlock>
-                                
-                            </StackPanel>
-                            <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center">
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource RemainingTimeConverter}">
-                                        <Binding Path="TotalTime" Mode="OneWay"/>
-                                        <Binding Path="CurrentProductionTime" Mode="OneWay"/>
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                            <ProgressBar 
-                                    Minimum="0" Height="20" Maximum="{Binding TotalTime.TotalMilliseconds, Mode=OneWay}"
-                                    Value="{Binding CurrentProductionTime.TotalMilliseconds, Mode=OneWay}"/>
-                        </DockPanel>
-                    </ContentPresenter.Content>
-                </ContentPresenter>
+                        </TextBlock>
+
+                    </StackPanel>
+                    <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource RemainingTimeConverter}" StringFormat="mm\:ss">
+                                <Binding Path="TotalTime" Mode="OneWay"/>
+                                <Binding Path="CurrentProductionTime" Mode="OneWay"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <ProgressBar 
+                                    Minimum="0" Height="20" Maximum="{Binding TotalTime.TotalSeconds, Mode=OneWay}"
+                                    Value="{Binding CurrentProductionTime.TotalSeconds, Mode=OneWay}"/>
+                </DockPanel>
+
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>

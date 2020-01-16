@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="InterGraph_Labo8.UcMachineSupervision"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:InterGraph_Labo8"
+             xmlns:cpb="clr-namespace:CircularProgressBarApp"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <local:RemainingTimeConverter x:Key="RemainingTimeConverter"/>
+    </UserControl.Resources>
+    <UniformGrid x:Name="root" Rows="1" Columns="3" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+        <Grid Grid.Column="0">
+            <cpb:CircularProgressBar
+            
+            Thickness="15" Radius="100"
+            Value="{Binding PaintingMachine.BatchList.CurrentProductionTime.TotalSeconds, Mode=OneWay}"
+            Style="{StaticResource CircularProgressBarStyle}"
+            Maximum="{Binding PaintingMachine.BatchList.TotalTime.TotalSeconds, Mode=OneWay}"
+            Background="GreenYellow"
+            Fill="Transparent"
+            Stroke="Blue"
+            StrokeThickness="3"
+            StrokeMode="Middle"
+            EndLineCap="Round" />
+            <TextBlock  VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource RemainingTimeConverter}" StringFormat="mm\:ss">
+                        <Binding Path="PaintingMachine.BatchList.TotalTime" Mode="OneWay"/>
+                        <Binding Path="PaintingMachine.BatchList.CurrentProductionTime" Mode="OneWay"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+
+            </TextBlock>
+        </Grid>
+
+        <Image x:Name="MachineStatus"  Source="Images/conveyor-moving.png" Grid.Column="1"/>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2">
+            <Button x:Name="BtnStartCycle" Content="Start cycle" Margin="10" Click="BtnStartCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+            <Button x:Name="BtnStopCycle" Content="Stop cycle" Margin="10" Click="BtnStopCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+            <Button x:Name="BtnReset" Content="Reset" Margin="10" Click="BtnReset_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+        </StackPanel>
+    </UniformGrid>
+</UserControl>

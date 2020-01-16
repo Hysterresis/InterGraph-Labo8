@@ -66,17 +66,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="MachineSupervision.xaml.cs">
-      <DependentUpon>MachineSupervision.xaml</DependentUpon>
+    <Compile Include="CircularProgressBar\CircularProgressBar.cs" />
+    <Compile Include="CircularProgressBar\Converters.cs" />
+    <Compile Include="CircularProgressBar\MainViewModel.cs" />
+    <Compile Include="CircularProgressBar\mvvmSupport\CommandHandler.cs" />
+    <Compile Include="UcMachineSupervision.xaml.cs">
+      <DependentUpon>UcMachineSupervision.xaml</DependentUpon>
     </Compile>
     <Compile Include="PaintingMachineConfiguration.cs" />
     <Compile Include="RemainingTimeConverter.cs" />
     <Compile Include="TimeSpanExtension.cs" />
-    <Page Include="BatchListBox.xaml">
+    <Page Include="CircularProgressBar\styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UcBatchListBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MachineSupervision.xaml">
+    <Page Include="UcMachineSupervision.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -90,8 +98,8 @@
     </Compile>
     <Compile Include="Batch.cs" />
     <Compile Include="BatchList.cs" />
-    <Compile Include="BatchListBox.xaml.cs">
-      <DependentUpon>BatchListBox.xaml</DependentUpon>
+    <Compile Include="UcBatchListBox.xaml.cs">
+      <DependentUpon>UcBatchListBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ColorExtensions.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -174,5 +182,6 @@
   <ItemGroup>
     <Resource Include="Images\disconnectArrow.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

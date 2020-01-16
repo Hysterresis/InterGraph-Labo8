@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Xml;
 
 namespace InterGraph_Labo8
@@ -30,7 +31,9 @@ namespace InterGraph_Labo8
 
         protected virtual void DoPropertyChanged(string preopretyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(preopretyName));
+            Application.Current.Dispatcher.BeginInvoke(
+  DispatcherPriority.Background,
+  new Action(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(preopretyName))));
         }
 
         #endregion
@@ -38,7 +41,7 @@ namespace InterGraph_Labo8
         #region Constants
         private const int UdpTimeout = 400;
         private const string CorruptedFileMessage = "Fichier corrompu";
-        private const int ProductionTickWaitingTime = 0;
+        private const int ProductionTickWaitingTime = 10;
         private TimeSpan BucketMovingTime = new TimeSpan(0, 0, 0, 0, 2750);
         #endregion
 
@@ -212,27 +215,15 @@ namespace InterGraph_Labo8
             get
             {
                 string reply = Send("BucketLocked");
-                if (reply == "True")
-                {
-                    return true;
-                }
-                else if (reply == "False")
-                {
-                    return false;
-                }
-                else
-                {
-                    throw new Exception("Invalid reply from painting machine");
-                }
+                if (reply == "True") return true;
+                else if (reply == "False") return false;
+                else throw new Exception("Invalid reply from painting machine");
             }
         }
 
         public MachineColor ActiveColor
         {
-            get
-            {
-                return activeColor;
-            }
+            get { return activeColor; }
             set
             {
                 string reply;
@@ -335,6 +326,7 @@ namespace InterGraph_Labo8
         {
             EmergencyStop();
             ProductionThread.Abort();
+            BatchList.CurrentProductionTime = new TimeSpan(0);
             foreach (var batch in BatchList.Batches)
             {
                 batch.CurrentProductionTime = new TimeSpan(0);
@@ -345,16 +337,21 @@ namespace InterGraph_Labo8
 
         private string Send(string message)
         {
-            // clean all pending messages from receive buffer before sending command
-            while (udpClient.Available > 0)
-                udpClient.Receive(ref sender);
-            //Send
-            byte[] commandBytes = Encoding.ASCII.GetBytes(message);
-            udpClient.Send(commandBytes, commandBytes.Length);
-            //Receive
-            byte[] answerBytes = udpClient.Receive(ref sender);
-            return Encoding.ASCII.GetString(answerBytes);
+            lock (communicationLock)
+            {
+                // clean all pending messages from receive buffer before sending command
+                while (udpClient.Available > 0)
+                    udpClient.Receive(ref sender);
+                //Send
+                byte[] commandBytes = Encoding.ASCII.GetBytes(message);
+                udpClient.Send(commandBytes, commandBytes.Length);
+                //Receive
+                byte[] answerBytes = udpClient.Receive(ref sender);
+
+                return Encoding.ASCII.GetString(answerBytes);
+            }
         }
+        private readonly object communicationLock = new object();
 
         private void ExecuteProduction()
         {
@@ -438,12 +435,13 @@ namespace InterGraph_Labo8
                             }
                             if (batchProductionStopWatch.IsRunning)
                             {
+                                BatchList.CurrentProductionTime += (batchProductionStopWatch.Elapsed - batch.CurrentProductionTime);
                                 batch.CurrentProductionTime = batchProductionStopWatch.Elapsed;
                             }
                             Thread.Sleep(ProductionTickWaitingTime);
                         }
                     }
-                    
+
                 }
             }
             catch (SocketException)

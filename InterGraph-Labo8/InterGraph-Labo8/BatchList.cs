@@ -1,12 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Xml;
 
 namespace InterGraph_Labo8
 {
-    public class BatchList
+    public class BatchList : INotifyPropertyChanged
     {
+        #region PropretyChangeInterface
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void DoPropertyChanged(string preopretyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(preopretyName));
+        }
+
+        #endregion
         #region Constructors
 
         /// <summary>
@@ -15,7 +26,6 @@ namespace InterGraph_Labo8
         public BatchList()
         {
             Batches = new List<Batch>();
-            NextBatchId = 1;
         }
 
         #endregion
@@ -25,6 +35,17 @@ namespace InterGraph_Labo8
         public List<Batch> Batches { get; set; }
         public TimeSpan TotalTime { get { return totalTime; } }
         private TimeSpan totalTime;
+        public TimeSpan CurrentProductionTime
+        {
+            get { return currentProductionTime; }
+            set
+            {
+                currentProductionTime = value;
+                DoPropertyChanged(nameof(CurrentProductionTime));
+
+            }
+        }
+        private TimeSpan currentProductionTime;
         #endregion
 
         #region Methods
@@ -39,12 +60,6 @@ namespace InterGraph_Labo8
             }
         }
 
-        public void Add(Batch newBatch)
-        {
-            newBatch.Id = NextBatchId++;
-            Batches.Add(newBatch);
-        }
-
         public void XmlRead(XmlReader reader)
         {
             reader.ReadStartElement(nameof(BatchList));
@@ -55,18 +70,6 @@ namespace InterGraph_Labo8
                 Batches.Last().XmlRead(reader);
             }
         }
-        public void XmlWrite(XmlWriter writer)
-        {
-            writer.WriteStartElement(nameof(BatchList));
-            writer.WriteElementString(nameof(NextBatchId), NextBatchId.ToString());
-            foreach (var batch in Batches)
-            {
-                batch.XmlWrite(writer);
-            }
-            writer.WriteEndElement();
-        }
-
         #endregion
-
     }
 }

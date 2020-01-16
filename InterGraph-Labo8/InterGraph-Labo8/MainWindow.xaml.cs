@@ -93,9 +93,9 @@ namespace InterGraph_Labo8
                 case MessageBoxResult.Yes:
                     try
                     {
+                        PaintingMachine.ProductionThread?.Abort();
                         PaintingMachine.EmergencyStop();
-                        goto case MessageBoxResult.No;
-                    }
+                        break;                    }
                     catch (System.Net.Sockets.SocketException) //la connexion est perdu
                     {
                         MessageBox.Show(

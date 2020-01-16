@@ -8,7 +8,7 @@
         Title="MainWindow" Height="450" Width="800"
         Closing="Window_Closing" WindowStartupLocation="CenterScreen" WindowState="Maximized">
 
-        <Grid >
+    <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
@@ -50,16 +50,31 @@
                 </UniformGrid>
             </TabItem>
             <TabItem x:Name="TabJob" Header="Travail">
-                <local:BatchListBox BatchList="{Binding PaintingMachine.BatchList}"/>
+                <local:UcBatchListBox BatchList="{Binding PaintingMachine.BatchList}" Margin="20,50,100,50"/>
             </TabItem>
             <TabItem x:Name="TabMachine" Header="Machine">
-                <local:MachineSupervision PaintingMachine="{Binding PaintingMachine}"/>
+                <local:UcMachineSupervision PaintingMachine="{Binding PaintingMachine}"/>
             </TabItem>
             <TabItem x:Name="TabConfiguration" Header="Config"></TabItem>
-            </TabControl>
+        </TabControl>
         <Button x:Name="BtnHelp" Content="Help" Grid.Column="0" VerticalAlignment="Top" ToolTip="Show help" Click="BtnHelp_Click"/>
-        <Button x:Name="BtnEmergencyStop" Content="STOP" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,50,50" ToolTip="Emergency STOP" Click="BtnEmergencyStop_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+        <Button x:Name="BtnEmergencyStop" Grid.Column="2" Height="100" Width="100" Background="Transparent" VerticalAlignment="Bottom" Margin="0,0,50,50" ToolTip="Emergency STOP" Click="BtnEmergencyStop_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="ContentTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <Image Source="Images/stop.png" />
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+
+        </Button>
         <Image x:Name="ImgConnexionStatus" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="50" Margin="0,10,10,0" Source="Images/disconnectArrow.png"/>
     </Grid>
-        
-    </Window>
+
+</Window>
