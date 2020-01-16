@@ -52,6 +52,7 @@ namespace InterGraph_Labo8
             PaintingMachine = new PaintingMachine(defaultMachineIP, defaultMachinePort,
                 defaultMachineConfiguration);
             PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
+            PaintingMachine.LoadBatchList("../../BatchList.xml");
 
             user = new Profil("Utilisateurs", Acreditation.Low, "Operator");
             foreman = new Profil("Contremaitre", Acreditation.Medium, "Manager");

@@ -70,12 +70,12 @@
     <Compile Include="CircularProgressBar\Converters.cs" />
     <Compile Include="CircularProgressBar\MainViewModel.cs" />
     <Compile Include="CircularProgressBar\mvvmSupport\CommandHandler.cs" />
-    <Compile Include="UcMachineSupervision.xaml.cs">
-      <DependentUpon>UcMachineSupervision.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UcMachineSupervision.xaml.cs">
+      <DependentUpon>UcMachineSupervision.xaml</DependentUpon>
     </Compile>
     <Compile Include="PaintingMachineConfiguration.cs" />
     <Compile Include="RemainingTimeConverter.cs" />
@@ -83,6 +83,10 @@
     <Page Include="CircularProgressBar\styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="UcBatchListBox.xaml">
       <SubType>Designer</SubType>
@@ -102,10 +106,6 @@
       <DependentUpon>UcBatchListBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="ColorExtensions.cs" />
-    <Page Include="MainWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
-    </Page>
     <Page Include="ModeleUtilisateur.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
