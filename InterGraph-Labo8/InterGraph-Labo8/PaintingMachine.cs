@@ -38,6 +38,8 @@ namespace InterGraph_Labo8
         #region Constants
         private const int UdpTimeout = 400;
         private const string CorruptedFileMessage = "Fichier corrompu";
+        private const int ProductionTickWaitingTime = 0;
+        private TimeSpan BucketMovingTime = new TimeSpan(0, 0, 0, 0, 2750);
         #endregion
 
         #region Enumerations
@@ -52,6 +54,7 @@ namespace InterGraph_Labo8
 
         public enum MachineStates
         {
+            InitProduction,
             Stoped,
             BucketComing,
             BucketLockedAndWaiting,
@@ -59,7 +62,8 @@ namespace InterGraph_Labo8
             PaintBFilling,
             PaintCFilling,
             PaintDFilling,
-            WorkDone
+            WorkDone,
+            NextBucket
         }
 
         #endregion
@@ -69,20 +73,18 @@ namespace InterGraph_Labo8
         /// <summary>
         /// The default Constructor.
         /// </summary>
-        public PaintingMachine(string ip = "0.0.0.0", int port = 0, double flow = 0.0, Color colorA = new Color(),
-            Color colorB = new Color(), Color colorC = new Color(), Color colorD = new Color())
+        public PaintingMachine(string ip = "0.0.0.0", int port = 0,
+            PaintingMachineConfiguration paintingMachineConfiguration = null)
         {
-            Flow = flow;
-            ColorA = colorA;
-            ColorB = colorB;
-            ColorC = colorC;
-            ColorD = colorD;
+
             Port = port;
             Ip = ip;
+            PaintingMachineConfiguration = paintingMachineConfiguration ?? new PaintingMachineConfiguration();
             sender = new IPEndPoint(IPAddress.Any, 0);
             BatchList = new BatchList();
             checkConnectionTimer = new Timer(CheckConnection, null, 0, 200);
             paintInjectionStopWatch = new Stopwatch();
+            batchProductionStopWatch = new Stopwatch();
         }
 
         #endregion
@@ -94,7 +96,9 @@ namespace InterGraph_Labo8
         private MachineColor activeColorMemory;
         private bool conveyorOnMemory;
         private MachineStates currentStateMemory;
+        private bool userWantToStop = false;
         Stopwatch paintInjectionStopWatch;
+        Stopwatch batchProductionStopWatch;
         Timer checkConnectionTimer;
 
         #endregion
@@ -117,25 +121,34 @@ namespace InterGraph_Labo8
         }
         private string ip;
         public int Port { get; set; }
-        public double ComputationPerSeconds { get; } = 1000 / 250;
-        public Color ColorA { get; set; }
-        public Color ColorB { get; set; }
-        public Color ColorC { get; set; }
-        public Color ColorD { get; set; }
-        public double Flow { get; set; }
+        PaintingMachineConfiguration PaintingMachineConfiguration { get; set; }
         public BatchList BatchList { get; set; }
-        public MachineStates CurrentState { get; set; }
+        public MachineStates CurrentState
+        {
+            get { return currentState; }
+            set
+            {
+                currentState = value;
+                DoPropertyChanged(nameof(CurrentState));
+            }
+        }
+        private MachineStates currentState = MachineStates.Stoped;
+        private readonly object currentStateLock = new object();
 
         public bool Connected
         {
             get { return connected; }
             set
             {
-                connected = value;
-                DoPropertyChanged(nameof(Connected));
+                if (connected != value)
+                {
+                    connected = value;
+                    DoPropertyChanged(nameof(Connected));
+                }
             }
         }
         private bool connected;
+        private readonly object connectedLock = new object();
 
         public bool ConveyorOn
         {
@@ -269,7 +282,7 @@ namespace InterGraph_Labo8
             }
             catch (SocketException)
             {
-                lock (this) { Connected = false; }
+                lock (connectedLock) { Connected = false; }
             }
         }
 
@@ -282,28 +295,53 @@ namespace InterGraph_Labo8
                 currentStateMemory = CurrentState;
                 ActiveColor = MachineColor.None;
                 ConveyorOn = false;
+                CurrentState = MachineStates.Stoped;
                 paintInjectionStopWatch.Stop();
+                batchProductionStopWatch.Stop();
             }
             catch (SocketException)
             {
-                lock (this) { Connected = false; }
+                lock (connectedLock) { Connected = false; }
+                throw;
             }
         }
 
-        public void Start()
+        public void StartProduction()
         {
             try
             {
-                ActiveColor = activeColorMemory;
-                ConveyorOn = conveyorOnMemory;
-                CurrentState = currentStateMemory;
-                paintInjectionStopWatch.Start();
+                if (ProductionThread?.IsAlive == true)
+                {
+                    ActiveColor = activeColorMemory;
+                    ConveyorOn = conveyorOnMemory;
+                    CurrentState = currentStateMemory;
+                    paintInjectionStopWatch.Start();
+                    batchProductionStopWatch.Start();
+                }
+                else
+                {
+                    ProductionThread = new Thread(new ThreadStart(ExecuteProduction));
+                    ProductionThread.Start();
+                }
             }
             catch (SocketException)
             {
-                lock (this) { Connected = false; }
+                lock (connectedLock) { Connected = false; }
+                throw;
             }
         }
+
+        public void ResetProduction()
+        {
+            EmergencyStop();
+            ProductionThread.Abort();
+            foreach (var batch in BatchList.Batches)
+            {
+                batch.CurrentProductionTime = new TimeSpan(0);
+            }
+        }
+
+        public void StopCycle() => userWantToStop = true;
 
         private string Send(string message)
         {
@@ -318,36 +356,6 @@ namespace InterGraph_Labo8
             return Encoding.ASCII.GetString(answerBytes);
         }
 
-        public void XmlRead(XmlReader reader)
-        {
-            reader.ReadStartElement(nameof(PaintingMachine));
-            Flow = reader.ReadElementContentAsDouble(nameof(Flow), "");
-            reader.ReadStartElement("PaintColors");
-            ColorA.XmlRead(reader, nameof(ColorA));
-            ColorB.XmlRead(reader, nameof(ColorB));
-            ColorC.XmlRead(reader, nameof(ColorC));
-            ColorD.XmlRead(reader, nameof(ColorD));
-            reader.ReadEndElement();
-            reader.ReadEndElement();
-        }
-        public void XmlWrite(XmlWriter writer)
-        {
-            writer.WriteStartElement(nameof(PaintingMachine));
-            writer.WriteElementString(nameof(Flow), Flow.ToString());
-            writer.WriteStartElement("PaintColors");
-            ColorA.XmlWrite(writer, nameof(ColorA));
-            ColorB.XmlWrite(writer, nameof(ColorB));
-            ColorC.XmlWrite(writer, nameof(ColorC));
-            ColorD.XmlWrite(writer, nameof(ColorD));
-            writer.WriteEndElement();
-            writer.WriteEndElement();
-        }
-        public void ExecuteProductionAsync()
-        {
-            ProductionThread = new Thread(new ThreadStart(ExecuteProduction));
-            ProductionThread.Start();
-        }
-
         private void ExecuteProduction()
         {
             try
@@ -356,66 +364,91 @@ namespace InterGraph_Labo8
                 {
                     for (int i = 0; i < batch.NumberOfElements; i++)
                     {
-                        BucketsLoading = true;
-                        ConveyorOn = true;
-                        CurrentState = MachineStates.BucketComing;
-                        while (CurrentState != MachineStates.WorkDone)
+                        lock (currentStateLock) { CurrentState = MachineStates.InitProduction; }
+                        if (userWantToStop)
+                        {
+                            userWantToStop = false;
+                            EmergencyStop();
+                        }
+                        while (CurrentState != MachineStates.NextBucket)
                         {
                             switch (CurrentState)
                             {
+                                case MachineStates.InitProduction:
+                                    BucketsLoading = true;
+                                    ConveyorOn = true;
+                                    lock (currentStateLock) { CurrentState = MachineStates.BucketComing; }
+                                    break;
                                 case MachineStates.BucketComing:
                                     if (BucketLocked)
                                     {
+                                        if (i == 0) //démarrer le chrono du lot quand le premier seau est arrivé
+                                        {
+                                            batchProductionStopWatch.Restart();
+                                        }
                                         ActiveColor = MachineColor.PaintA;
                                         paintInjectionStopWatch.Restart();
-                                        CurrentState = MachineStates.PaintAFilling;
+                                        lock (currentStateLock) { CurrentState = MachineStates.PaintAFilling; }
                                     }
                                     break;
                                 case MachineStates.PaintAFilling:
-                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityA / Flow) * 1000))
+                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityA / PaintingMachineConfiguration.Flow) * 1000))
                                     {
                                         ActiveColor = MachineColor.PaintB;
                                         paintInjectionStopWatch.Restart();
-                                        CurrentState = MachineStates.PaintBFilling;
+                                        lock (currentStateLock) { CurrentState = MachineStates.PaintBFilling; }
                                     }
                                     break;
                                 case MachineStates.PaintBFilling:
-                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityB / Flow) * 1000))
+                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityB / PaintingMachineConfiguration.Flow) * 1000))
                                     {
                                         ActiveColor = MachineColor.PaintC;
                                         paintInjectionStopWatch.Restart();
-                                        CurrentState = MachineStates.PaintCFilling;
+                                        lock (currentStateLock) { CurrentState = MachineStates.PaintCFilling; }
                                     }
                                     break;
                                 case MachineStates.PaintCFilling:
-                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityC / Flow) * 1000))
+                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityC / PaintingMachineConfiguration.Flow) * 1000))
                                     {
                                         ActiveColor = MachineColor.PaintD;
                                         paintInjectionStopWatch.Restart();
-                                        CurrentState = MachineStates.PaintDFilling;
+                                        lock (currentStateLock) { CurrentState = MachineStates.PaintDFilling; }
                                     }
                                     break;
                                 case MachineStates.PaintDFilling:
-                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityD / Flow) * 1000))
+                                    if (paintInjectionStopWatch.ElapsedMilliseconds >= Convert.ToInt32((batch.Recipe.QuantityD / PaintingMachineConfiguration.Flow) * 1000))
                                     {
                                         ActiveColor = MachineColor.None;
                                         paintInjectionStopWatch.Reset();
-                                        CurrentState = MachineStates.WorkDone;
+                                        lock (currentStateLock) { CurrentState = MachineStates.WorkDone; }
                                     }
+                                    break;
+                                case MachineStates.WorkDone:
+                                    if (i == batch.NumberOfElements - 1) //arrêter le chrono du lot quand le dernier seau a fini
+                                    {
+                                        batchProductionStopWatch.Reset();
+                                    }
+                                    if (userWantToStop) EmergencyStop();
+                                    lock (currentStateLock) { CurrentState = MachineStates.NextBucket; }
                                     break;
                                 case MachineStates.Stoped:
                                     break;
                                 default:
                                     throw new Exception("Comportement anormal de la machine");
                             }
-                            Thread.Sleep(25);
+                            if (batchProductionStopWatch.IsRunning)
+                            {
+                                batch.CurrentProductionTime = batchProductionStopWatch.Elapsed;
+                            }
+                            Thread.Sleep(ProductionTickWaitingTime);
                         }
                     }
+                    
                 }
             }
             catch (SocketException)
             {
-                lock (this) { Connected = false; }
+                lock (connectedLock) { Connected = false; }
             }
         }
 
@@ -432,6 +465,8 @@ namespace InterGraph_Labo8
             {
                 MessageBox.Show(CorruptedFileMessage + e.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            BatchList.InitBatchesProperties(PaintingMachineConfiguration, BucketMovingTime);
         }
         #endregion
     }

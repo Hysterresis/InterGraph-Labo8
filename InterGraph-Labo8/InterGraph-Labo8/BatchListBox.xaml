@@ -4,41 +4,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:InterGraph_Labo8"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d" >
+    <UserControl.Resources>
+        <local:RemainingTimeConverter x:Key="RemainingTimeConverter"/>
+    </UserControl.Resources>
     <ListBox x:Name="LbBatches" ItemsSource="{Binding BatchList.Batches}" 
-                     AlternationCount="2" HorizontalContentAlignment="Stretch">
+                     AlternationCount="2" HorizontalContentAlignment="Stretch"
+             DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
         <ListBox.ItemTemplate>
             <DataTemplate>
                 <ContentPresenter>
                     <ContentPresenter.Content>
                         <DockPanel>
-                            <TextBlock DockPanel.Dock="Top">
-                                        <Run Text="ID:" FontWeight="Bold"/>
-                                        <Run Text="{Binding Path=Id, Mode=OneWay}"/>
-                            </TextBlock>
-                            <Grid DockPanel.Dock="Left">
-                                <Ellipse Fill="Black" Width="40" Height="40" 
-                                                 ToolTip="Number of bucket" Margin="20,0"/>
-                                <TextBlock Text="{Binding NumberOfElements}" 
-                                                   FontSize="20" Foreground="White" 
-                                                   VerticalAlignment="Center" 
-                                                   HorizontalAlignment="Center"/>
-                            </Grid>
+                            <TextBlock Text="{Binding NumberOfElements}" 
+                                       DockPanel.Dock="Left"
+                                       FontSize="20" VerticalAlignment="Center"/>
                             <Rectangle Margin="10" RadiusX="5" RadiusY="5" 
-                                               Height="50" Width="50" DockPanel.Dock="Right">
+                                               Height="50" Width="50" DockPanel.Dock="Left">
                                 <Rectangle.Fill>
-                                    <SolidColorBrush>
-                                        <SolidColorBrush.Color>
-                                            <MultiBinding Converter="{StaticResource FinalColorConverter}">
-                                                <Binding Path="Recipe" Mode="OneWay"/>
-                                                <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}" Path="BatchList.MachineConfiguration" Mode="OneWay"/>
-                                            </MultiBinding>
-                                        </SolidColorBrush.Color>
-                                    </SolidColorBrush>
+                                    <SolidColorBrush Color="{Binding Recipe.FinalColor}"/>
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <StackPanel Orientation="Vertical">
+                            <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
                                 <TextBlock>
                                             <Run Text="Color A:" FontWeight="Bold"/>
                                             <Run Text="{Binding Path=Recipe.QuantityA, 
@@ -63,18 +50,19 @@
                                                 StringFormat=N2, Mode=OneWay}"/>
                                             <Run Text="ml"/>
                                 </TextBlock>
-                                <Separator/>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="Image/arrow_right.png" 
-                                                   Width="40" Height="10"/>
-                                    <TextBlock>
-                                            <Run Text="Total:" FontWeight="Bold"/>
-                                            <Run Text="{Binding Path=Recipe.TotalQuantity, 
-                                                StringFormat=N2, Mode=OneWay}"/>
-                                            <Run Text="ml"/>
-                                    </TextBlock>
-                                </StackPanel>
+                                
                             </StackPanel>
+                            <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource RemainingTimeConverter}">
+                                        <Binding Path="TotalTime" Mode="OneWay"/>
+                                        <Binding Path="CurrentProductionTime" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <ProgressBar 
+                                    Minimum="0" Height="20" Maximum="{Binding TotalTime.TotalMilliseconds, Mode=OneWay}"
+                                    Value="{Binding CurrentProductionTime.TotalMilliseconds, Mode=OneWay}"/>
                         </DockPanel>
                     </ContentPresenter.Content>
                 </ContentPresenter>

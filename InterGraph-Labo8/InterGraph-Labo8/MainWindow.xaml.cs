@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,11 +26,15 @@ namespace InterGraph_Labo8
 
         private const string defaultMachineIP = "127.0.0.1";
         private const int defaultMachinePort = 9999;
-        private const double defaultMachineFlow = 10.0;
-        private Color defaultMachineColorA = Color.FromArgb(255, 69, 134, 191);
-        private Color defaultMachineColorB = Color.FromArgb(255, 125, 185, 105);
-        private Color defaultMachineColorC = Color.FromArgb(255, 253, 240, 2);
-        private Color defaultMachineColorD = Color.FromArgb(255, 242, 146, 5);
+        private const string messageConnectionErrorText = "L'action sur la machine n'a pas pu être effectué car elle est déconnecté";
+        private const string messageConnectionErrorTitle = "Erreur de connexion";
+        private PaintingMachineConfiguration defaultMachineConfiguration =
+            new PaintingMachineConfiguration(
+                10.0,
+                Color.FromArgb(255, 69, 134, 191),
+                Color.FromArgb(255, 125, 185, 105),
+                Color.FromArgb(255, 253, 240, 2),
+                Color.FromArgb(255, 242, 146, 5));
         private Profil user;
         private Profil foreman;
         private Profil admin;
@@ -45,12 +50,8 @@ namespace InterGraph_Labo8
 
             this.DataContext = this;
             PaintingMachine = new PaintingMachine(defaultMachineIP, defaultMachinePort,
-                defaultMachineFlow,
-                defaultMachineColorA, defaultMachineColorB,
-                defaultMachineColorC, defaultMachineColorD);
+                defaultMachineConfiguration);
             PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
-            PaintingMachine.LoadBatchList("BatchList.xml");
-            PaintingMachine.ExecuteProductionAsync();
 
             user = new Profil("Utilisateurs", Acreditation.Low, "Operator");
             foreman = new Profil("Contremaitre", Acreditation.Medium, "Manager");
@@ -100,52 +101,38 @@ namespace InterGraph_Labo8
                     try
                     {
                         PaintingMachine.EmergencyStop();
+                        goto case MessageBoxResult.No;
                     }
                     catch (System.Net.Sockets.SocketException) //la connexion est perdu
                     {
                         MessageBox.Show(
-                            "La machine n'a pas pu être stoppée car elle est déconnecté",
-                            "Erreur de connexion", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    catch (Exception error) //La machine répond un message inconnu
-                    {
-                        MessageBox.Show(error.Message, "Erreur", MessageBoxButton.OK,
-                            MessageBoxImage.Error);
+                            messageConnectionErrorText,
+                            messageConnectionErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     break;
                 case MessageBoxResult.No:
+                    PaintingMachine.ProductionThread?.Abort();
                     break;
                 default:
                     break;
             }
         }
 
-
-
-        private void BtnHelp_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void BtnStartCycle_Click(object sender, RoutedEventArgs e)
-        {
-            PaintingMachine.Start();
-        }
-
-        private void BtnStopCycle_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void BtnReset_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        private void BtnHelp_Click(object sender, RoutedEventArgs e) { }
 
         private void BtnEmergencyStop_Click(object sender, RoutedEventArgs e)
         {
-            PaintingMachine.EmergencyStop();
+            try
+            {
+                PaintingMachine.EmergencyStop();
+            }
+            catch (SocketException) //connection perdu
+            {
+                MessageBox.Show(messageConnectionErrorText,
+                    messageConnectionErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
 
         private void UserSelected_Click(object sender, RoutedEventArgs e)
         {

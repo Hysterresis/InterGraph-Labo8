@@ -25,6 +25,15 @@ namespace InterGraph_Labo8
             InitializeComponent();
         }
 
-        public BatchList BatchList { get; set; }
+        private static readonly DependencyProperty BatchListProperty =
+            DependencyProperty.Register("BatchList", typeof(BatchList), typeof(BatchListBox));
+
+        public BatchList BatchList
+        {
+            get { return (BatchList)GetValue(BatchListProperty); }
+            set { SetValue(BatchListProperty, value); }
+        }
+
+
     }
 }
