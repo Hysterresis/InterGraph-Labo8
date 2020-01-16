@@ -79,17 +79,8 @@
                 
                 </TabItem>
             <TabItem x:Name="TabMachine" Header="Machine" Visibility="Hidden">
-                    <UniformGrid Rows="1" Columns="3">
-                        <TextBlock Text="TIMER" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        <Image Source="Images/conveyor-stop.png" Grid.Column="1"/>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                            <Button x:Name="BtnStartCycle" Content="Start cycle" Margin="10" Click="BtnStartCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-                            <Button x:Name="BtnStopCycle" Content="Stop cycle" Margin="10" Click="BtnStopCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-                            <Button x:Name="BtnReset" Content="Reset" Margin="10" Click="BtnReset_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-                        </StackPanel>
-                    </UniformGrid>
 
-                </TabItem>
+            </TabItem>
             <TabItem x:Name="TabConfiguration" Header="Config" Visibility="Hidden"></TabItem>
         </TabControl>
         <Button x:Name="BtnHelp" Content="Help" Grid.Column="0" VerticalAlignment="Top" ToolTip="Show help" Click="BtnHelp_Click"/>
