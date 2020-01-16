@@ -7,16 +7,57 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         Closing="Window_Closing" WindowStartupLocation="CenterScreen" WindowState="Maximized"
-        Background="Black">
-
+        Background="#202020">
+    <Window.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="BorderBrush" Value="Blue"/>
+            <Setter Property="BorderThickness" Value="5"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Border x:Name="grid" Background="Black">
+                            <ContentPresenter>
+                                <ContentPresenter.Content>
+                                    <TextBlock Margin="4" FontSize="15" Text="{TemplateBinding Content}" Foreground="Blue"/>
+                                </ContentPresenter.Content>
+                            </ContentPresenter>
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                <Setter TargetName="grid" Property="Background" Value="#202020"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Background" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+            <!--<Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="15" Background="Transparent"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>-->
+        </Style>
+    </Window.Resources>
         <Grid >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-        <TabControl TabStripPlacement="Bottom" Grid.Column="0" Grid.ColumnSpan="3" Background="#202020">
-                <TabItem x:Name="TabConnexion" Header="Connexion">
+        <TabControl TabStripPlacement="Bottom" Grid.Column="0" Grid.ColumnSpan="3" Background="#202020" BorderThickness="0">
+            <TabItem x:Name="TabConnexion" Header="Connexion">
                     <Grid Margin="50,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -27,7 +68,7 @@
                         <RowDefinition Height="2*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                        <Border x:Name="User" Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
+                    <Border x:Name="User" Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
                             <Button x:Name="UserSelected" BorderThickness="0" Background="Transparent" Click="UserSelected_Click">
                                 <Button.Resources>
                                     <Style TargetType="{x:Type Border}">
@@ -82,9 +123,11 @@
             <TabItem x:Name="TabMachine" Header="Machine">
                 <local:UcMachineSupervision PaintingMachine="{Binding PaintingMachine}"/>
             </TabItem>
-            <TabItem x:Name="TabConfiguration" Header="Config" Visibility="Hidden"></TabItem>
+            <TabItem x:Name="TabConfiguration" Header="Config" >
+                
+            </TabItem>
         </TabControl>
-        <Button x:Name="BtnHelp" Content="Help" Grid.Column="0" VerticalAlignment="Top" ToolTip="Show help" Click="BtnHelp_Click"/>
+        <!--<Button x:Name="BtnHelp" Content="Help" Grid.Column="0" VerticalAlignment="Top" ToolTip="Show help" Click="BtnHelp_Click"/>-->
         <Button x:Name="BtnEmergencyStop" Grid.Column="2" Height="100" Width="100" Background="Transparent" VerticalAlignment="Bottom" Margin="0,0,50,50" ToolTip="Emergency STOP" Click="BtnEmergencyStop_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}">
             <Button.Style>
                 <Style TargetType="Button">

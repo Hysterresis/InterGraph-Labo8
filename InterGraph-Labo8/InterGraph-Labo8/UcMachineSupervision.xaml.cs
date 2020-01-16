@@ -40,7 +40,7 @@ namespace InterGraph_Labo8
             set { SetValue(PaintingMachineProperty, value); }
         }
 
-        private void PaintingMachine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        /*private void PaintingMachine_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             PaintingMachine paintingMachine = sender as PaintingMachine;
             if (e.PropertyName == nameof(PaintingMachine.CurrentState))
@@ -75,7 +75,7 @@ namespace InterGraph_Labo8
                         break;
                 }
             }
-        }
+        }*/
 
         private void BtnStartCycle_Click(object sender, RoutedEventArgs e) => PaintingMachine.StartProduction();
 
@@ -85,7 +85,7 @@ namespace InterGraph_Labo8
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
+            //PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
         }
     }
 }
