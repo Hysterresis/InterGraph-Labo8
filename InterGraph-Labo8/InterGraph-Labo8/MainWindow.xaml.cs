@@ -30,6 +30,10 @@ namespace InterGraph_Labo8
         private Color defaultMachineColorB = Color.FromArgb(255, 125, 185, 105);
         private Color defaultMachineColorC = Color.FromArgb(255, 253, 240, 2);
         private Color defaultMachineColorD = Color.FromArgb(255, 242, 146, 5);
+        private Profil user;
+        private Profil foreman;
+        private Profil admin;
+        private Profil currentProfil;
 
         #endregion
 
@@ -47,6 +51,10 @@ namespace InterGraph_Labo8
             PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
             PaintingMachine.LoadBatchList("BatchList.xml");
             PaintingMachine.ExecuteProductionAsync();
+
+            user = new Profil("Utilisateurs", Acreditation.Low, "Operator");
+            foreman = new Profil("Contremaitre", Acreditation.Medium, "Manager");
+            admin = new Profil("Admin", Acreditation.High, "Administrator");
         }
 
         #endregion
@@ -138,8 +146,90 @@ namespace InterGraph_Labo8
         {
             PaintingMachine.EmergencyStop();
         }
+
+        private void UserSelected_Click(object sender, RoutedEventArgs e)
+        {
+            currentProfil = user;
+            SelectedUser.Text = currentProfil.ProfilName;
+            PasswordBlock.Visibility = Visibility.Visible;
+            Connection.Visibility = Visibility.Visible;
+        }
+
+        private void AdminSelected_Click(object sender, RoutedEventArgs e)
+        {
+            currentProfil = admin;
+            SelectedUser.Text = currentProfil.ProfilName;
+            PasswordBlock.Visibility = Visibility.Visible;
+            Connection.Visibility = Visibility.Visible;
+        }
+
+        private void ForemanSelected_Click(object sender, RoutedEventArgs e)
+        {
+            currentProfil = foreman;
+            SelectedUser.Text = currentProfil.ProfilName;
+            PasswordBlock.Visibility = Visibility.Visible;
+            Connection.Visibility = Visibility.Visible;
+        }
+
+        private void Connection_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentProfil.ComparisonPassword(Password.Password))
+            {
+                //CurrentProfilImage.Source = currentProfil.ImageSource;
+                //CurrentProfil.Visibility = Visibility.Visible;
+                CurrentProfil.SourceImage = currentProfil.ImageSource;
+                CurrentProfil.TextName = currentProfil.ProfilName;
+                CurrentProfil.Visibility = Visibility.Visible;
+                ModifyPassword.Visibility = Visibility;
+                User.Visibility = Visibility.Hidden;
+                Foreman.Visibility = Visibility.Hidden;
+                Admin.Visibility = Visibility.Hidden;
+                TabJob.Visibility = Visibility.Visible;
+                TabMachine.Visibility = Visibility.Visible;
+                Deconnection.Visibility = Visibility.Visible;
+                Connection.Visibility = Visibility.Hidden;
+                PasswordBlock.Visibility = Visibility.Hidden;
+                if (currentProfil.AcreditationLevel == Acreditation.High)
+                {
+                    TabConfiguration.Visibility = Visibility.Visible;
+                }
+            }
+        }
+
+
         #endregion
 
+        private void Deconnection_Click(object sender, RoutedEventArgs e)
+        {
+            currentProfil = new Profil();
+            CurrentProfil.Visibility = Visibility.Hidden;
+            SelectedUser.Text = "";
+            Deconnection.Visibility = Visibility.Hidden;
+            ModifyPassword.Visibility = Visibility.Hidden;
+            NewPassword.Visibility = Visibility.Hidden;
+            SaveNewPassword.Visibility = Visibility.Hidden;
+            TabJob.Visibility = Visibility.Hidden;
+            TabMachine.Visibility = Visibility.Hidden;
+            TabConfiguration.Visibility = Visibility.Hidden;
+            User.Visibility = Visibility.Visible;
+            Foreman.Visibility = Visibility.Visible;
+            Admin.Visibility = Visibility.Visible;
+        }
 
+        private void ModifyPassword_Click(object sender, RoutedEventArgs e)
+        {
+            ModifyPassword.Visibility = Visibility.Collapsed;
+            NewPassword.Visibility = Visibility.Visible;
+            SaveNewPassword.Visibility = Visibility.Visible;
+        }
+
+        private void SaveNewPassword_Click(object sender, RoutedEventArgs e)
+        {
+            currentProfil.Password = NewPassword.Text;
+            NewPassword.Visibility = Visibility.Hidden;
+            SaveNewPassword.Visibility = Visibility.Hidden;
+            ModifyPassword.Visibility = Visibility.Visible;
+            SelectedUser.Text = user.Password;
+        }
     }
 }

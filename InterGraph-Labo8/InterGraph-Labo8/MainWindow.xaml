@@ -6,39 +6,49 @@
         xmlns:local="clr-namespace:InterGraph_Labo8"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
-        Closing="Window_Closing" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Closing="Window_Closing" WindowStartupLocation="CenterScreen" WindowState="Maximized"
+        Background="Black">
 
         <Grid >
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <TabControl TabStripPlacement="Bottom" Grid.Column="0" Grid.ColumnSpan="3">
-            <TabItem x:Name="TabConnexion" Header="Connexion">
-                <UniformGrid Rows="1" Margin="50,0">
-                    <Border  Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
-                        <Button x:Name="UserSelected" BorderThickness="0" Background="Transparent">
-                            <Button.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius" Value="15"/>
-                                </Style>
-                            </Button.Resources>
-                            <Image Source="Images/059-mechanic.png"/>
-                        </Button>
-                    </Border>
-                    <Border Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
-                        <Button x:Name="ForemanSelected" BorderThickness="0" Background="Transparent">
-                            <Button.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius" Value="15"/>
-                                </Style>
-                            </Button.Resources>
-                            <Image Source="Images/047-foreman.png"/>
-                        </Button>
-                    </Border>
-                    <Border Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
-                        <Button x:Name="AdminSelected" BorderThickness="0" Background="Transparent" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+        <TabControl TabStripPlacement="Bottom" Grid.Column="0" Grid.ColumnSpan="3" Background="#202020">
+                <TabItem x:Name="TabConnexion" Header="Connexion">
+                    <Grid Margin="50,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                        <Border x:Name="User" Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
+                            <Button x:Name="UserSelected" BorderThickness="0" Background="Transparent" Click="UserSelected_Click">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="15"/>
+                                    </Style>
+                                </Button.Resources>
+                                <Image Source="Images/059-mechanic.png"/>
+                            </Button>
+                        </Border>
+                    <Border x:Name="Foreman" Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}" Grid.Column="1">
+                        <Button x:Name="ForemanSelected" BorderThickness="0" Background="Transparent" Click="ForemanSelected_Click">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="15"/>
+                                    </Style>
+                                </Button.Resources>
+                                <Image Source="Images/047-foreman.png"/>
+                            </Button>
+                        </Border>
+                    <Border x:Name="Admin" Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}"  Grid.Column="3">
+                        <Button x:Name="AdminSelected" BorderThickness="0" Background="Transparent" Click="AdminSelected_Click">
                             <Button.Resources>
                                 <Style TargetType="{x:Type Border}">
                                     <Setter Property="CornerRadius" Value="15"/>
@@ -47,25 +57,41 @@
                             <Image Source="Images/078-programmer.png"/>
                         </Button>
                     </Border>
-                </UniformGrid>
-            </TabItem>
-            <TabItem x:Name="TabJob" Header="Travail">
-                
-            </TabItem>
-            <TabItem x:Name="TabMachine" Header="Machine">
-                <UniformGrid Rows="1" Columns="3">
-                    <TextBlock Text="TIMER" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <Image Source="Images/conveyor-stop.png" Grid.Column="1"/>
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                        <Button x:Name="BtnStartCycle" Content="Start cycle" Margin="10" Click="BtnStartCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-                        <Button x:Name="BtnStopCycle" Content="Stop cycle" Margin="10" Click="BtnStopCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-                        <Button x:Name="BtnReset" Content="Reset" Margin="10" Click="BtnReset_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+                    <local:ModeleUtilisateur x:Name="CurrentProfil" Grid.Column="1" Visibility="Hidden"/>
+                    <!--<Border x:Name="CurrentProfil" Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}" Grid.Column="1" Visibility="Hidden">
+                        <Image x:Name="CurrentProfilImage"/>
+                    </Border>-->
+                    <StackPanel x:Name="PasswordBlock" Orientation="Horizontal" Grid.Row="1" Visibility="Hidden">
+                        <TextBlock Text="Mot de Passe " VerticalAlignment="Center" Margin="10,0"/>
+                        <PasswordBox x:Name="Password" Width="100" Height="20" PasswordChar="*"/>
                     </StackPanel>
-                </UniformGrid>
+                    <Button x:Name="Connection" Content="Connexion" Grid.Column="1" Grid.Row="1" Width="100" Height="50" Click="Connection_Click" Visibility="Hidden"/>
+                    <TextBlock x:Name="SelectedUser" Grid.Column="2" Grid.Row="1"/>
+                    <Button x:Name="Deconnection" Content="Déconnexion" Grid.Column="2" Grid.Row="1" Width="100" Height="50" Visibility="Hidden" Click="Deconnection_Click"/>
+                    <StackPanel Grid.Column="2" Margin="0, 10">
+                        <Button x:Name="ModifyPassword" Content="Modifier le mot de passe" Width="150" Height="30" Click="ModifyPassword_Click" Visibility="Hidden"/>
+                        <TextBox x:Name="NewPassword" Width="100" Height="20" Margin="10" Visibility="Hidden"/>
+                        <Button x:Name="SaveNewPassword" Content="Enregistrer" Width="70" Height="30" Click="SaveNewPassword_Click" Visibility="Hidden"/>
+                    </StackPanel>        
+                </Grid>
+                </TabItem>
+                <TabItem x:Name="TabJob" Header="Travail" Visibility="Hidden">
+                
+                </TabItem>
+            <TabItem x:Name="TabMachine" Header="Machine" Visibility="Hidden">
+                    <UniformGrid Rows="1" Columns="3">
+                        <TextBlock Text="TIMER" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Image Source="Images/conveyor-stop.png" Grid.Column="1"/>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                            <Button x:Name="BtnStartCycle" Content="Start cycle" Margin="10" Click="BtnStartCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+                            <Button x:Name="BtnStopCycle" Content="Stop cycle" Margin="10" Click="BtnStopCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+                            <Button x:Name="BtnReset" Content="Reset" Margin="10" Click="BtnReset_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+                        </StackPanel>
+                    </UniformGrid>
 
-            </TabItem>
-            <TabItem x:Name="TabConfiguration" Header="Config"></TabItem>
-            </TabControl>
+                </TabItem>
+            <TabItem x:Name="TabConfiguration" Header="Config" Visibility="Hidden"></TabItem>
+        </TabControl>
         <Button x:Name="BtnHelp" Content="Help" Grid.Column="0" VerticalAlignment="Top" ToolTip="Show help" Click="BtnHelp_Click"/>
         <Button x:Name="BtnEmergencyStop" Content="STOP" Grid.Column="2" VerticalAlignment="Bottom" Margin="0,0,50,50" ToolTip="Emergency STOP" Click="BtnEmergencyStop_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
         <Image x:Name="ImgConnexionStatus" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="50" Margin="0,10,10,0" Source="Images/connectArrow.png"/>
