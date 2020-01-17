@@ -57,6 +57,7 @@ namespace InterGraph_Labo8
             user = new Profil("Utilisateurs", Acreditation.Low, "Operator");
             foreman = new Profil("Contremaitre", Acreditation.Medium, "Manager");
             admin = new Profil("Admin", Acreditation.High, "Administrator");
+            
         }
 
         #endregion

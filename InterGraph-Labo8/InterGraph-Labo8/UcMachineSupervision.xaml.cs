@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace InterGraph_Labo8
 {
@@ -22,21 +21,6 @@ namespace InterGraph_Labo8
         public PaintingMachine PaintingMachine
         {
             get { return (PaintingMachine)GetValue(PaintingMachineProperty); }
-            //get
-            //{
-            //    if (!this.Dispatcher.CheckAccess())
-            //    {
-            //        return (PaintingMachine)this.Dispatcher.Invoke(
-            //            DispatcherPriority.Background,
-            //            (DispatcherOperationCallback)delegate { 
-            //                return this.GetValue(PaintingMachineProperty); 
-            //            }, PaintingMachineProperty);
-            //    }
-            //    else
-            //    {
-            //        return (PaintingMachine)this.GetValue(PaintingMachineProperty);
-            //    }
-            //}
             set { SetValue(PaintingMachineProperty, value); }
         }
 
@@ -45,7 +29,7 @@ namespace InterGraph_Labo8
             PaintingMachine paintingMachine = sender as PaintingMachine;
             if (e.PropertyName == nameof(PaintingMachine.CurrentState))
             {
-                switch (PaintingMachine.CurrentState)
+                switch (paintingMachine.CurrentState)
                 {
                     case PaintingMachine.MachineStates.Stoped:
                         MachineStatus.Source = new BitmapImage(new Uri("Images/conveyor-stop.png", UriKind.Relative));
@@ -85,7 +69,7 @@ namespace InterGraph_Labo8
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
+           PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
         }
     }
 }
