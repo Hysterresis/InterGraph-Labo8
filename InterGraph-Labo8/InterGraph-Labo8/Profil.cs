@@ -13,15 +13,16 @@ namespace InterGraph_Labo8
         private string _password;
 
         public Profil() { }
-        public Profil(string profileName, Acreditation acreditationLevel, string password)
+        public Profil(string profileName, Acreditation acreditationLevel, string password, string imageSource)
         {
             ProfilName = profileName;
             AcreditationLevel = acreditationLevel;
             Password = password;
+            ImageSource = imageSource;
         }
 
         #region Propreties
-        public ImageSource ImageSource { get; set; }
+        public string ImageSource { get; set; }
         public string ProfilName { get; set; }
         public Acreditation AcreditationLevel { get; set; }
         public string Password {

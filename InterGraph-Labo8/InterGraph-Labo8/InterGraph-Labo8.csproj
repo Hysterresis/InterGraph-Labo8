@@ -92,6 +92,9 @@
     <Compile Include="PaintingMachineConfiguration.cs" />
     <Compile Include="RemainingTimeConverter.cs" />
     <Compile Include="TimeSpanExtension.cs" />
+    <Compile Include="UcProfilManage.xaml.cs">
+      <DependentUpon>UcProfilManage.xaml</DependentUpon>
+    </Compile>
     <Page Include="CircularProgressBar\styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -149,6 +152,10 @@
     <Page Include="Themes\MetroDark\Theme.Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UcProfilManage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
