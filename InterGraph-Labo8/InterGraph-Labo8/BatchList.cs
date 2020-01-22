@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml;
@@ -25,14 +26,14 @@ namespace InterGraph_Labo8
         /// </summary>
         public BatchList()
         {
-            Batches = new List<Batch>();
+            Batches = new ObservableCollection<Batch>();
         }
 
         #endregion
 
         #region Properties
         public int NextBatchId { get; set; }
-        public List<Batch> Batches { get; set; }
+        public ObservableCollection<Batch> Batches { get; set; }
         public TimeSpan TotalTime { get { return totalTime; } }
         private TimeSpan totalTime;
         public TimeSpan CurrentProductionTime
@@ -58,6 +59,7 @@ namespace InterGraph_Labo8
                 batch.SetTotalTime(paintingMachineConfiguration.Flow, bucketMovingTime);
                 totalTime += batch.TotalTime;
             }
+            DoPropertyChanged(nameof(TotalTime));
         }
 
         public void XmlRead(XmlReader reader)

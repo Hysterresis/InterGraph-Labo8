@@ -70,9 +70,21 @@
     <Compile Include="CircularProgressBar\Converters.cs" />
     <Compile Include="CircularProgressBar\MainViewModel.cs" />
     <Compile Include="CircularProgressBar\mvvmSupport\CommandHandler.cs" />
+    <Compile Include="FileExplorer\Controller\Controller.cs" />
+    <Compile Include="FileExplorer\Controller\DirectoryService.cs" />
+    <Compile Include="FileExplorer\Model\DirInfo.cs" />
+    <Compile Include="FileExplorer\ViewModel\DirectoryViewModel.cs" />
+    <Compile Include="FileExplorer\ViewModel\ValueConverters.cs" />
+    <Compile Include="FileExplorer\ViewModel\ViewModelBase.cs" />
+    <Compile Include="FileExplorer\View\Directory.xaml.cs">
+      <DependentUpon>Directory.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UcAdminPannel.xaml.cs">
+      <DependentUpon>UcAdminPannel.xaml</DependentUpon>
     </Compile>
     <Compile Include="UcMachineSupervision.xaml.cs">
       <DependentUpon>UcMachineSupervision.xaml</DependentUpon>
@@ -84,9 +96,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="FileExplorer\View\Directory.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="UcAdminPannel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UcBatchListBox.xaml">
       <SubType>Designer</SubType>
@@ -190,6 +210,11 @@
   <ItemGroup>
     <Resource Include="Images\disconnectArrow.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="FileExplorer\Image\diskdrive.png" />
+    <Resource Include="FileExplorer\Image\file.png" />
+    <Resource Include="FileExplorer\Image\folder.png" />
+    <Resource Include="FileExplorer\Image\MyComputer.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

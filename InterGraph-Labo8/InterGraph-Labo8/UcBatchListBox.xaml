@@ -4,67 +4,90 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:InterGraph_Labo8"
+             xmlns:v ="clr-namespace:FileExplorer.View"
              mc:Ignorable="d" 
              >
     <UserControl.Resources>
         <local:RemainingTimeConverter x:Key="RemainingTimeConverter"/>
+        <Style x:Key="{x:Type ProgressBar}" TargetType="{x:Type ProgressBar}" >
+            <Setter Property="Foreground" Value="#00aade" />
+            <Setter Property="Background" Value="Black"/>
+        </Style>
     </UserControl.Resources>
-    <ListBox x:Name="LbBatches" ItemsSource="{Binding BatchList.Batches}" 
-                     AlternationCount="2" HorizontalContentAlignment="Stretch"
-             DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
-        <ListBox.ItemTemplate>
-            <DataTemplate>
-                <DockPanel>
-                    <TextBlock Text="{Binding NumberOfElements}" 
-                                       DockPanel.Dock="Left"
+    <DockPanel>
+        <StackPanel x:Name="LoadFileBloc" DockPanel.Dock="Left" Visibility="Collapsed">
+            <v:Directory x:Name="BatchListFileExplorer" Width="400" Margin="0,0,20,20" />
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="BtnCloseLoadBloc" Content="Retour" HorizontalAlignment="Left" Margin="20,0" Padding="5" Click="BtnCloseLoadBloc_Click"/>
+                <Button x:Name="BtnLoadXML" Content="Charger" HorizontalAlignment="Right" Padding="5" Margin="20,0" Click="BtnLoadXML_Click"/>
+            </StackPanel>
+        </StackPanel>
+        <Button x:Name="BtnLoadBloc_Open" Content="Gestionnaire de fichier" DockPanel.Dock="Bottom" Click="BtnLoadBloc_Open_Click"
+                Padding="5" Margin="0,20" HorizontalAlignment="Left"/>
+        <ListBox x:Name="LbBatches" ItemsSource="{Binding BatchList.Batches}" Grid.IsSharedSizeScope="True"
+             HorizontalContentAlignment="Stretch" 
+             DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" Background="#202020"
+                 BorderThickness="1" BorderBrush="#00aade" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="A"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="B"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="C"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="D"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding NumberOfElements}"  Foreground="#00aade"
+                                       Grid.Column="0"
                                        FontSize="20" VerticalAlignment="Center"/>
-                    <Rectangle Margin="10" RadiusX="5" RadiusY="5" 
-                                               Height="50" Width="50" DockPanel.Dock="Left">
-                        <Rectangle.Fill>
-                            <SolidColorBrush Color="{Binding Recipe.FinalColor}"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                    <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
-                        <TextBlock>
+                        <Rectangle Margin="10" RadiusX="5" RadiusY="5" 
+                                               Height="50" Width="50" Grid.Column="1">
+                            <Rectangle.Fill>
+                                <SolidColorBrush Color="{Binding Recipe.FinalColor}"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <StackPanel Grid.Column="2" Orientation="Vertical">
+                            <TextBlock Foreground="#00aade">
                                             <Run Text="Color A:" FontWeight="Bold"/>
                                             <Run Text="{Binding Path=Recipe.QuantityA, 
                                                 StringFormat=N2, Mode=OneWay}"/>
                                             <Run Text="ml"/>
-                        </TextBlock>
-                        <TextBlock>
+                            </TextBlock>
+                            <TextBlock Foreground="#00aade">
                                             <Run Text="Color B:" FontWeight="Bold"/>
                                             <Run Text="{Binding Path=Recipe.QuantityB, 
                                                 StringFormat=N2, Mode=OneWay}"/>
                                             <Run Text="ml"/>
-                        </TextBlock>
-                        <TextBlock>
+                            </TextBlock>
+                            <TextBlock Foreground="#00aade">
                                             <Run Text="Color C:" FontWeight="Bold"/>
                                             <Run Text="{Binding Path=Recipe.QuantityC, 
                                                 StringFormat=N2, Mode=OneWay}"/>
                                             <Run Text="ml"/>
-                        </TextBlock>
-                        <TextBlock>
+                            </TextBlock>
+                            <TextBlock Foreground="#00aade">
                                             <Run Text="Color D:" FontWeight="Bold"/>
                                             <Run Text="{Binding Path=Recipe.QuantityD, 
                                                 StringFormat=N2, Mode=OneWay}"/>
                                             <Run Text="ml"/>
-                        </TextBlock>
+                            </TextBlock>
 
-                    </StackPanel>
-                    <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center">
-                        <TextBlock.Text>
-                            <MultiBinding Converter="{StaticResource RemainingTimeConverter}" StringFormat="mm\:ss">
-                                <Binding Path="TotalTime" Mode="OneWay"/>
-                                <Binding Path="CurrentProductionTime" Mode="OneWay"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                    <ProgressBar 
+                        </StackPanel>
+                        <ProgressBar  Grid.Column="3"
                                     Minimum="0" Height="20" Maximum="{Binding TotalTime.TotalSeconds, Mode=OneWay}"
                                     Value="{Binding CurrentProductionTime.TotalSeconds, Mode=OneWay}"/>
-                </DockPanel>
-
-            </DataTemplate>
-        </ListBox.ItemTemplate>
-    </ListBox>
+                        <TextBlock Grid.Column="4" VerticalAlignment="Center" Foreground="#00aade">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource RemainingTimeConverter}" StringFormat="mm\:ss">
+                                    <Binding Path="TotalTime" Mode="OneWay"/>
+                                    <Binding Path="CurrentProductionTime" Mode="OneWay"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
 </UserControl>

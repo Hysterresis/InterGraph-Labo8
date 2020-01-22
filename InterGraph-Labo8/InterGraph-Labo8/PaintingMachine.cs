@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileExplorer.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -113,13 +114,16 @@ namespace InterGraph_Labo8
             get { return ip; }
             set
             {
-                ip = value;
-                udpClient?.Close();
-                // Create communication socket
-                udpClient = new UdpClient(Ip, Port);
-                // adjust receive time out
-                udpClient.Client.SetSocketOption(SocketOptionLevel.Socket,
-                    SocketOptionName.ReceiveTimeout, UdpTimeout);
+                lock (communicationLock)
+                {
+                    ip = value;
+                    udpClient?.Close();
+                    // Create communication socket
+                    udpClient = new UdpClient(Ip, Port);
+                    // adjust receive time out
+                    udpClient.Client.SetSocketOption(SocketOptionLevel.Socket,
+                        SocketOptionName.ReceiveTimeout, UdpTimeout);
+                }
             }
         }
         private string ip;
@@ -325,7 +329,7 @@ namespace InterGraph_Labo8
         public void ResetProduction()
         {
             EmergencyStop();
-            ProductionThread.Abort();
+            ProductionThread?.Abort();
             BatchList.CurrentProductionTime = new TimeSpan(0);
             foreach (var batch in BatchList.Batches)
             {
@@ -346,7 +350,7 @@ namespace InterGraph_Labo8
                 byte[] commandBytes = Encoding.ASCII.GetBytes(message);
                 udpClient.Send(commandBytes, commandBytes.Length);
                 //Receive
-                byte[] answerBytes = udpClient.Receive(ref sender);
+                byte[] answerBytes = udpClient?.Receive(ref sender);
 
                 return Encoding.ASCII.GetString(answerBytes);
             }
@@ -452,6 +456,17 @@ namespace InterGraph_Labo8
 
         public void LoadBatchList(string filePath)
         {
+            if (ProductionThread?.IsAlive == true)
+            {
+                switch(MessageBox.Show("Une production est en cours!\nStopper la production?", "Chargement de fichier", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning))
+                {
+                    case MessageBoxResult.Cancel: return;
+                    case MessageBoxResult.No: return;
+                    case MessageBoxResult.Yes: ResetProduction();
+                        break;
+                }
+            }
+            BatchList.Batches.Clear();
             try
             {
                 using (XmlReader reader = XmlReader.Create(filePath))

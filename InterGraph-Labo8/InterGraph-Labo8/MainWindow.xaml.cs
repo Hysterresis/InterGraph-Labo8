@@ -24,7 +24,7 @@ namespace InterGraph_Labo8
     {
         #region Constants
 
-        private const string defaultMachineIP = "127.0.0.1";
+        private const string defaultMachineIP = "192.168.1.146";
         private const int defaultMachinePort = 9999;
         private const string messageConnectionErrorText = "L'action sur la machine n'a pas pu être effectué car elle est déconnecté";
         private const string messageConnectionErrorTitle = "Erreur de connexion";
@@ -52,7 +52,6 @@ namespace InterGraph_Labo8
             PaintingMachine = new PaintingMachine(defaultMachineIP, defaultMachinePort,
                 defaultMachineConfiguration);
             PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
-            PaintingMachine.LoadBatchList("../../BatchList.xml");
 
             user = new Profil("Utilisateurs", Acreditation.Low, "Operator");
             foreman = new Profil("Contremaitre", Acreditation.Medium, "Manager");
@@ -102,8 +101,7 @@ namespace InterGraph_Labo8
                 case MessageBoxResult.Yes:
                     try
                     {
-                        PaintingMachine.ProductionThread?.Abort();
-                        PaintingMachine.EmergencyStop();
+                        PaintingMachine.ResetProduction();
                         break;                    }
                     catch (System.Net.Sockets.SocketException) //la connexion est perdu
                     {
@@ -114,8 +112,6 @@ namespace InterGraph_Labo8
                     break;
                 case MessageBoxResult.No:
                     PaintingMachine.ProductionThread?.Abort();
-                    break;
-                default:
                     break;
             }
         }
@@ -219,6 +215,12 @@ namespace InterGraph_Labo8
             SaveNewPassword.Visibility = Visibility.Hidden;
             ModifyPassword.Visibility = Visibility.Visible;
             SelectedUser.Text = user.Password;
+        }
+
+        private void UcBatchListBox_LoadingBatchList(object sender, EventArgs e)
+        {
+            LoadingBatchListEventArgs args = e as LoadingBatchListEventArgs;
+            PaintingMachine.LoadBatchList(args.Path);
         }
     }
 }

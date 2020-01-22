@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <local:RemainingTimeConverter x:Key="RemainingTimeConverter"/>
     </UserControl.Resources>
+    
     <UniformGrid x:Name="root" Rows="1" Columns="3" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
         <Grid Grid.Column="0">
             <cpb:CircularProgressBar
@@ -18,13 +19,13 @@
             Value="{Binding PaintingMachine.BatchList.CurrentProductionTime.TotalSeconds, Mode=OneWay}"
             Style="{StaticResource CircularProgressBarStyle}"
             Maximum="{Binding PaintingMachine.BatchList.TotalTime.TotalSeconds, Mode=OneWay}"
-            Background="GreenYellow"
+            Background="#00aade"
             Fill="Transparent"
-            Stroke="Blue"
-            StrokeThickness="3"
+            Stroke="#434343"
+            StrokeThickness="15"
             StrokeMode="Middle"
             EndLineCap="Round" />
-            <TextBlock  VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#00aade" FontWeight="Bold">
 
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource RemainingTimeConverter}" StringFormat="mm\:ss">
@@ -35,12 +36,13 @@
 
             </TextBlock>
         </Grid>
-
-        <Image x:Name="MachineStatus"  Source="Images/conveyor-moving.png" Grid.Column="1"/>
+        <Border x:Name="User" CornerRadius="20" BorderThickness="5" Padding="10" Background="#434343" BorderBrush="#00aade" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
+            <Image x:Name="MachineStatus"  Source="Images/conveyor-moving.png" Grid.Column="1"/>
+        </Border>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2">
-            <Button x:Name="BtnStartCycle" Content="Start cycle" Margin="10" Click="BtnStartCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-            <Button x:Name="BtnStopCycle" Content="Stop cycle" Margin="10" Click="BtnStopCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
-            <Button x:Name="BtnReset" Content="Reset" Margin="10" Click="BtnReset_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+            <Button x:Name="BtnStartCycle" Background="Green" Content="Start cycle" Margin="10" Click="BtnStartCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+            <Button x:Name="BtnStopCycle" Background="Red" Content="Stop cycle" Margin="10" Click="BtnStopCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
+            <Button x:Name="BtnReset" Background="Orange" Content="Reset" Margin="10" Click="BtnReset_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>
         </StackPanel>
     </UniformGrid>
 </UserControl>

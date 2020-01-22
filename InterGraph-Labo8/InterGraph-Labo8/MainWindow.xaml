@@ -49,16 +49,17 @@
                 </Setter.Value>
             </Setter>-->
         </Style>
+        
     </Window.Resources>
-        <Grid >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
         <TabControl TabStripPlacement="Bottom" Grid.Column="0" Grid.ColumnSpan="3" Background="#202020" BorderThickness="0">
             <TabItem x:Name="TabConnexion" Header="Connexion">
-                    <Grid Margin="50,0">
+                <Grid Margin="50,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -69,15 +70,15 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Border x:Name="User" Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
-                            <Button x:Name="UserSelected" BorderThickness="0" Background="Transparent" Click="UserSelected_Click">
-                                <Button.Resources>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="CornerRadius" Value="15"/>
-                                    </Style>
-                                </Button.Resources>
-                                <Image Source="Images/059-mechanic.png"/>
-                            </Button>
-                        </Border>
+                        <Button x:Name="UserSelected" BorderThickness="0" Background="Transparent" Click="UserSelected_Click">
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="15"/>
+                                </Style>
+                            </Button.Resources>
+                            <Image Source="Images/059-mechanic.png"/>
+                        </Button>
+                    </Border>
                     <Border x:Name="Foreman" Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}" Grid.Column="1">
                         <Button x:Name="ForemanSelected" BorderThickness="0" Background="Transparent" Click="ForemanSelected_Click">
                             <Button.Resources>
@@ -118,13 +119,13 @@
             </TabItem>
 
             <TabItem x:Name="TabJob" Header="Travail">
-                <local:UcBatchListBox BatchList="{Binding PaintingMachine.BatchList}" Margin="20,50,100,50"/>
+                <local:UcBatchListBox BatchList="{Binding PaintingMachine.BatchList}" RootDirectory="{Binding ElementName=AdminPannel, Path=RootDirectory}" Margin="20,50,100,50" LoadingBatchList="UcBatchListBox_LoadingBatchList"/>
             </TabItem>
             <TabItem x:Name="TabMachine" Header="Machine">
                 <local:UcMachineSupervision PaintingMachine="{Binding PaintingMachine}"/>
             </TabItem>
             <TabItem x:Name="TabConfiguration" Header="Config" >
-                
+                <local:UcAdminPannel x:Name="AdminPannel" Ip="{Binding PaintingMachine.Ip, Mode=TwoWay}"/>
             </TabItem>
         </TabControl>
         <!--<Button x:Name="BtnHelp" Content="Help" Grid.Column="0" VerticalAlignment="Top" ToolTip="Show help" Click="BtnHelp_Click"/>-->
