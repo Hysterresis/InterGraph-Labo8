@@ -27,10 +27,10 @@ namespace InterGraph_Labo8
             get { return Name.Text; }
             set { Name.Text = value; }
         }
-        public ImageSource SourceImage
+        public string SourceImage
         {
             set { SetValue(ImageSourceProperty, value); }
-            get { return (ImageSource)GetValue(ImageSourceProperty); }
+            get { return (string)GetValue(ImageSourceProperty); }
         }
         public bool isSelected { get; set; }
         public ModeleUtilisateur()
@@ -45,12 +45,12 @@ namespace InterGraph_Labo8
 
         private void ImageSourceChange(object sender, EventArgs e)
         {
-            UserImage.Source = new BitmapImage(new Uri(SourceImage.ToString()));
+            UserImage.Source = new BitmapImage(new Uri(SourceImage, UriKind.Relative));
             Name.Text = SourceImage.ToString();
         }
 
         private static readonly DependencyProperty ImageSourceProperty =
-            DependencyProperty.Register("SourceImage", typeof(ImageSource), typeof(ModeleUtilisateur));
+            DependencyProperty.Register("SourceImage", typeof(string), typeof(ModeleUtilisateur));
         
         private void UserSelected_Click(object sender, RoutedEventArgs e)
         {

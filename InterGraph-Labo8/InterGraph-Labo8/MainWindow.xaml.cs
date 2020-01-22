@@ -54,9 +54,9 @@ namespace InterGraph_Labo8
             PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
             PaintingMachine.LoadBatchList("../../BatchList.xml");
 
-            user = new Profil("Utilisateurs", Acreditation.Low, "Operator");
-            foreman = new Profil("Contremaitre", Acreditation.Medium, "Manager");
-            admin = new Profil("Admin", Acreditation.High, "Administrator");
+            user = new Profil("Utilisateurs", Acreditation.Low, "Operator", "Images/059-mechanic.png");
+            foreman = new Profil("Contremaitre", Acreditation.Medium, "Manager", "Images/047-foreman.png");
+            admin = new Profil("Admin", Acreditation.High, "Administrator", "Images/078-programmer.png");
         }
 
         #endregion
@@ -202,6 +202,7 @@ namespace InterGraph_Labo8
             User.Visibility = Visibility.Visible;
             Foreman.Visibility = Visibility.Visible;
             Admin.Visibility = Visibility.Visible;
+            Password.Password = "";
         }
 
         private void ModifyPassword_Click(object sender, RoutedEventArgs e)

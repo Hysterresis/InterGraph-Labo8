@@ -26,11 +26,25 @@
                         <DataTemplate.Triggers>
                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
                                 <Setter TargetName="grid" Property="Background" Value="#202020"/>
+                                <Setter TargetName="grid" Property="BorderThickness" Value="5"/>
+                                <Setter TargetName="grid" Property="BorderBrush" Value="Blue"/>
+                                <!--<Setter TargetName="*" Property="BorderThickness" Value="0"/>-->
                             </DataTrigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
+            <!--<Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderThickness" Value="0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>-->
         </Style>
         <Style TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -117,13 +131,13 @@
                 </Grid>
                 </TabItem>
 
-            <TabItem x:Name="TabJob" Header="Travail">
+            <TabItem x:Name="TabJob" Header="Travail" Visibility="Hidden">
                 <local:UcBatchListBox BatchList="{Binding PaintingMachine.BatchList}" Margin="20,50,100,50"/>
             </TabItem>
-            <TabItem x:Name="TabMachine" Header="Machine">
+            <TabItem x:Name="TabMachine" Header="Machine" Visibility="Hidden">
                 <local:UcMachineSupervision PaintingMachine="{Binding PaintingMachine}"/>
             </TabItem>
-            <TabItem x:Name="TabConfiguration" Header="Config" >
+            <TabItem x:Name="TabConfiguration" Header="Config" Visibility="Hidden">
                 
             </TabItem>
         </TabControl>
