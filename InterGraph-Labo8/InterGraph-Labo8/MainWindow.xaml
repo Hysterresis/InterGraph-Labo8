@@ -94,14 +94,14 @@
                         </Border>
                     <Border x:Name="Foreman" Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}" Grid.Column="1">
                         <Button x:Name="ForemanSelected" BorderThickness="0" Background="Transparent" Click="ForemanSelected_Click">
-                                <Button.Resources>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="CornerRadius" Value="15"/>
-                                    </Style>
-                                </Button.Resources>
-                                <Image Source="Images/047-foreman.png"/>
-                            </Button>
-                        </Border>
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="15"/>
+                                </Style>
+                            </Button.Resources>
+                            <Image Source="Images/047-foreman.png"/>
+                        </Button>
+                    </Border>
                     <Border x:Name="Admin" Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}"  Grid.Column="3">
                         <Button x:Name="AdminSelected" BorderThickness="0" Background="Transparent" Click="AdminSelected_Click">
                             <Button.Resources>
@@ -127,9 +127,9 @@
                         <Button x:Name="ModifyPassword" Content="Modifier le mot de passe" Width="150" Height="30" Click="ModifyPassword_Click" Visibility="Hidden"/>
                         <TextBox x:Name="NewPassword" Width="100" Height="20" Margin="10" Visibility="Hidden"/>
                         <Button x:Name="SaveNewPassword" Content="Enregistrer" Width="70" Height="30" Click="SaveNewPassword_Click" Visibility="Hidden"/>
-                    </StackPanel>        
+                    </StackPanel>
                 </Grid>
-                </TabItem>
+            </TabItem>
 
             <TabItem x:Name="TabJob" Header="Travail" Visibility="Hidden">
                 <local:UcBatchListBox BatchList="{Binding PaintingMachine.BatchList}" Margin="20,50,100,50"/>
