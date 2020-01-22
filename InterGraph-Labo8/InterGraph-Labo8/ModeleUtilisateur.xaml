@@ -8,16 +8,19 @@
              Height="Auto" Width="Auto">
     <StackPanel DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
         <TextBlock x:Name="Name" Text="{Binding Path=TextName}" FontSize="30" HorizontalAlignment="Center"/>
-        <Border  Background="Black" CornerRadius="15" BorderThickness="2" BorderBrush="Blue" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
-            <Border.Style>
+        <Border x:Name="Border"  Background="#434343" CornerRadius="15" BorderThickness="2" BorderBrush="#00aade" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
+            <!--<Border.Style>
                 <Style TargetType="{x:Type Border}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=isSelected}" Value="True">
+                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
                             <Setter Property="Background" Value="#202020"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                            <Setter Property="Background" Value="Black"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </Border.Style>
+            </Border.Style>-->
             <Button x:Name="UserSelected" BorderThickness="0" Background="Transparent" Click="UserSelected_Click">
                 <Button.Resources>
                     <Style TargetType="{x:Type Border}">

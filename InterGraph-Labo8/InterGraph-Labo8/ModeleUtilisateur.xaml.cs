@@ -22,6 +22,7 @@ namespace InterGraph_Labo8
     /// </summary>
     public partial class ModeleUtilisateur : UserControl
     {
+        const string propertyNameIsSelected = "IsSelected";
         public string TextName
         {
             get { return Name.Text; }
@@ -32,11 +33,32 @@ namespace InterGraph_Labo8
             set { SetValue(ImageSourceProperty, value); }
             get { return (string)GetValue(ImageSourceProperty); }
         }
-        public bool isSelected { get; set; }
+        bool _isSelected;
+        public bool IsSelected 
+        {
+            get { return _isSelected; }
+            set
+            {
+                _isSelected = value;
+                if (value)
+                    Border.Background = new SolidColorBrush(Color.FromRgb(0x4F, 0x4F, 0x4F));
+                else
+                    Border.Background = new SolidColorBrush(Colors.Black);
+                /*if(_isSelected != value)
+                {
+                    _isSelected = value;
+                    DoPropertyChanged(propertyNameIsSelected);
+                    Name.Text = _isSelected.ToString();
+                }*/
+            } 
+        }
+
         public ModeleUtilisateur()
         {
-            isSelected = false;
+            //IsSelected = false;
             InitializeComponent();
+
+            //Border.DataContext = this;
 
             DependencyPropertyDescriptor imageSourceDescriptor =
                 DependencyPropertyDescriptor.FromProperty(ModeleUtilisateur.ImageSourceProperty, typeof(ModeleUtilisateur));
@@ -51,11 +73,21 @@ namespace InterGraph_Labo8
 
         private static readonly DependencyProperty ImageSourceProperty =
             DependencyProperty.Register("SourceImage", typeof(string), typeof(ModeleUtilisateur));
-        
+
+        //public event PropertyChangedEventHandler PropertyChanged;
+
+        /*protected virtual void DoPropertyChanged(string propertyName)
+        {
+            if(PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }*/
+
+        public event EventHandler SelectProfil;
         private void UserSelected_Click(object sender, RoutedEventArgs e)
         {
-            isSelected = true;
-            //Name.Text = "true";
+            SelectProfil.Invoke(this, new EventArgs());
         }
     }
 }
