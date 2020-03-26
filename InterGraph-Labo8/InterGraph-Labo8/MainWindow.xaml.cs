@@ -24,7 +24,7 @@ namespace InterGraph_Labo8
     {
         #region Constants
 
-        private const string defaultMachineIP = "192.168.1.146";
+        private const string defaultMachineIP = "127.0.0.1";
         private const int defaultMachinePort = 9999;
         private const string messageConnectionErrorText = "L'action sur la machine n'a pas pu être effectué car elle est déconnecté";
         private const string messageConnectionErrorTitle = "Erreur de connexion";
@@ -59,9 +59,6 @@ namespace InterGraph_Labo8
 
         public PaintingMachine PaintingMachine { get; set; }
 
-        #endregion
-
-        #region Methods
         #endregion
 
         #region Events
@@ -110,8 +107,6 @@ namespace InterGraph_Labo8
             }
         }
 
-        private void BtnHelp_Click(object sender, RoutedEventArgs e) { }
-
         private void BtnEmergencyStop_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -124,7 +119,7 @@ namespace InterGraph_Labo8
                     messageConnectionErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        #endregion
+       
 
         private void UcProfilManage_ProfilChange(object sender, EventArgs e)
         {
@@ -152,5 +147,6 @@ namespace InterGraph_Labo8
             LoadingBatchListEventArgs args = e as LoadingBatchListEventArgs;
             PaintingMachine.LoadBatchList(args.Path);
         }
+        #endregion
     }
 }

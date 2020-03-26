@@ -223,5 +223,12 @@
     <Resource Include="FileExplorer\Image\folder.png" />
     <Resource Include="FileExplorer\Image\MyComputer.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\stopDisable.png" />
+    <Resource Include="Images\stopMouseOver.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PaintManagerIco.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

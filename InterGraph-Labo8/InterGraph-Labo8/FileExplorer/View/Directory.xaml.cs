@@ -34,7 +34,8 @@ namespace FileExplorer.View
             DirInfo dir = e.NewValue as DirInfo;
 
             Controller.Controller controller = DataContext as Controller.Controller;
-            controller.SelectedDirectory = dir;
+
+            controller.SelectedDirectory ??= dir;
         }
     }
 }

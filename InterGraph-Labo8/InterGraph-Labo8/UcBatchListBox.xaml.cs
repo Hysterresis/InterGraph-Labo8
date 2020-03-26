@@ -38,6 +38,11 @@ namespace InterGraph_Labo8
                 DependencyPropertyDescriptor.FromProperty(UcBatchListBox.RootDirectoryProperty,
                 typeof(UcBatchListBox));
             rootDirectoryDescriptor.AddValueChanged(this, RootDirectoryChange);
+
+            DependencyPropertyDescriptor currentProfilDescriptor =
+                DependencyPropertyDescriptor.FromProperty(UcBatchListBox.CurrentProfilProperty,
+                typeof(UcBatchListBox));
+            currentProfilDescriptor.AddValueChanged(this, CurrentProfilChange);
         }
 
         /*Fonction appelée quaud une propriété est modifiée afin de pouvoir faire les 
@@ -47,6 +52,18 @@ namespace InterGraph_Labo8
             FileExplorer.RootDirectory = new FileExplorer.Model.DirInfo(new DirectoryInfo(RootDirectory));
             BatchListFileExplorer.DataContext = null;
             BatchListFileExplorer.DataContext = FileExplorer;
+        }
+        private void CurrentProfilChange(object sender, EventArgs e)
+        {
+            if (CurrentProfil.AcreditationLevel == Acreditation.Low)
+            {
+                LoadFileBloc.Visibility = Visibility.Collapsed;
+                BtnLoadBloc_Open.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                BtnLoadBloc_Open.Visibility = Visibility.Visible;
+            }
         }
 
 
@@ -58,6 +75,14 @@ namespace InterGraph_Labo8
         {
             get { return (BatchList)GetValue(BatchListProperty); }
             set { SetValue(BatchListProperty, value); }
+        }
+
+        private static readonly DependencyProperty CurrentProfilProperty =
+            DependencyProperty.Register("CurrentProfil", typeof(Profil), typeof(UcBatchListBox));
+        public Profil CurrentProfil
+        {
+            get { return (Profil)GetValue(CurrentProfilProperty); }
+            set { SetValue(CurrentProfilProperty, value); }
         }
 
         private static readonly DependencyProperty RootDirectoryProperty =

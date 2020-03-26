@@ -9,11 +9,10 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
         <Button x:Name="BtnSaveChanges" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Content="Enregistrer" Margin="10" Padding="5" Click="BtnSaveChanges_Click"/>
-        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Orientation="Horizontal">
+        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Orientation="Horizontal" Width="270">
             <TextBlock Text="IP de la machine: " Margin="5" Foreground="#00aade"/>
             <TextBox Text="{Binding Ip, Mode=OneWay}" x:Name="TbIP" Margin="5" />
         </StackPanel>
         <v:Directory x:Name="RootDirectoryExplorer" />
-
     </DockPanel>
 </UserControl>

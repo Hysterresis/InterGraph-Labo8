@@ -67,9 +67,9 @@ namespace InterGraph_Labo8
 
         private void BtnReset_Click(object sender, RoutedEventArgs e) => PaintingMachine.ResetProduction();
 
-        /*private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-           PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
-        }*/
+            PaintingMachine.PropertyChanged += PaintingMachine_PropertyChanged;
+        }
     }
 }

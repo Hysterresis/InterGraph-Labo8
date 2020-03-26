@@ -41,9 +41,9 @@ namespace InterGraph_Labo8
             {
                 _isSelected = value;
                 if (value)
-                    Border.Background = new SolidColorBrush(Color.FromRgb(0x4F, 0x4F, 0x4F));
+                    Border.Background = new SolidColorBrush(Color.FromRgb(0x80, 0x80, 0x80));
                 else
-                    Border.Background = new SolidColorBrush(Colors.Black);
+                    Border.Background = new SolidColorBrush(Color.FromRgb(0x43, 0x43, 0x43));
                 /*if(_isSelected != value)
                 {
                     _isSelected = value;

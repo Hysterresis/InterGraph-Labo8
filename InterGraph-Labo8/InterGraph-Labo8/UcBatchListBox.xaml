@@ -40,14 +40,14 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding NumberOfElements}"  Foreground="#00aade"
                                        Grid.Column="0"
-                                       FontSize="20" VerticalAlignment="Center"/>
+                                       FontSize="25" VerticalAlignment="Center"/>
                         <Rectangle Margin="10" RadiusX="5" RadiusY="5" 
                                                Height="50" Width="50" Grid.Column="1">
                             <Rectangle.Fill>
                                 <SolidColorBrush Color="{Binding Recipe.FinalColor}"/>
                             </Rectangle.Fill>
                         </Rectangle>
-                        <StackPanel Grid.Column="2" Orientation="Vertical">
+                        <StackPanel Grid.Column="2" Orientation="Vertical" Margin="5">
                             <TextBlock Foreground="#00aade">
                                             <Run Text="Color A:" FontWeight="Bold"/>
                                             <Run Text="{Binding Path=Recipe.QuantityA, 
@@ -76,7 +76,7 @@
                         </StackPanel>
                         <ProgressBar  Grid.Column="3"
                                     Minimum="0" Height="20" Maximum="{Binding TotalTime.TotalSeconds, Mode=OneWay}"
-                                    Value="{Binding CurrentProductionTime.TotalSeconds, Mode=OneWay}"/>
+                                    Value="{Binding CurrentProductionTime.TotalSeconds, Mode=OneWay}" Margin="5"/>
                         <TextBlock Grid.Column="4" VerticalAlignment="Center" Foreground="#00aade">
                             <TextBlock.Text>
                                 <MultiBinding Converter="{StaticResource RemainingTimeConverter}" StringFormat="mm\:ss">

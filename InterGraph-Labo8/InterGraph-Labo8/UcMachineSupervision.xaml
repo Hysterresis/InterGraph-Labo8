@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:InterGraph_Labo8"
              xmlns:cpb="clr-namespace:CircularProgressBarApp"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"><!--Loaded="UserControl_Loaded">-->
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <local:RemainingTimeConverter x:Key="RemainingTimeConverter"/>
     </UserControl.Resources>
@@ -37,7 +37,7 @@
             </TextBlock>
         </Grid>
         <Border x:Name="User" CornerRadius="20" BorderThickness="5" Padding="10" Background="#434343" BorderBrush="#00aade" Margin="60,0" Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualWidth}">
-            <Image x:Name="MachineStatus"  Source="Images/conveyor-moving.png" Grid.Column="1"/>
+            <Image x:Name="MachineStatus"  Source="Images/conveyor-stop.png" Grid.Column="1"/>
         </Border>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2">
             <Button x:Name="BtnStartCycle" Background="Green" Content="Start cycle" Margin="10" Click="BtnStartCycle_Click" IsEnabled="{Binding Path=PaintingMachine.Connected}"/>

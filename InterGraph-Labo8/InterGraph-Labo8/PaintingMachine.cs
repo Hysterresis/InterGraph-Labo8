@@ -32,9 +32,7 @@ namespace InterGraph_Labo8
 
         protected virtual void DoPropertyChanged(string preopretyName)
         {
-            Application.Current.Dispatcher.BeginInvoke(
-  DispatcherPriority.Background,
-  new Action(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(preopretyName))));
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background,new Action(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(preopretyName))));
         }
 
         #endregion

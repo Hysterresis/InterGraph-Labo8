@@ -23,7 +23,6 @@ namespace InterGraph_Labo8
         private Profil user;
         private Profil foreman;
         private Profil admin;
-        private Profil currentProfil;
 
         public UcProfilManage()
         {
@@ -33,6 +32,15 @@ namespace InterGraph_Labo8
 
             InitializeComponent();
 
+        }
+
+
+        private static readonly DependencyProperty currentProfilProperty =
+            DependencyProperty.Register("currentProfil", typeof(Profil), typeof(UcProfilManage));
+        public Profil currentProfil
+        {
+            get { return (Profil)GetValue(currentProfilProperty); }
+            set { SetValue(currentProfilProperty, value); }
         }
 
         private void UserSelected(object sender, EventArgs e)
